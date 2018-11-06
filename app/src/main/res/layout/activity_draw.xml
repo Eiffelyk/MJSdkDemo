@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <com.mj.sdk.view.DrawPartView
+        android:id="@+id/draw_drawview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:draw_padding_left="0dp"
+        app:draw_padding_top="14dp"
+        app:draw_padding_right="0dp"
+        app:draw_padding_bottom="14dp"
+        app:draw_paint_color="#00a"
+        app:draw_paint_size="3dp"/>
+
+    <ImageView
+        android:id="@+id/img_thumbnail"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_marginTop="100dp"
+        android:onClick="change"
+        android:src="@mipmap/ic_launcher_round"/>
+    <ImageView
+        android:id="@+id/img_epc"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_marginTop="210dp"
+        android:src="@mipmap/ic_launcher_round"/>
+</RelativeLayout>

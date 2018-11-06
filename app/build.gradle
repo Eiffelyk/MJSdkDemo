@@ -1,0 +1,60 @@
+import java.text.SimpleDateFormat
+
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 28
+    defaultConfig {
+        applicationId "com.dataenlighten.aimjsdk.demo"
+        minSdkVersion 16
+        targetSdkVersion 28
+        versionCode 1
+        versionName "1.0"
+        ndk {
+            abiFilters "armeabi"
+        }
+    }
+    signingConfigs {
+        release {
+            storeFile file(STOREFILE)
+            storePassword KEYSTORE_PASSWORD
+            keyAlias KEYALIAS
+            keyPassword KEY_PASSWORD
+        }
+    }
+    buildTypes {
+        release {
+            minifyEnabled true
+            shrinkResources true //去掉无用资源
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), '../proguard-rules.pro'
+            debuggable false
+            jniDebuggable false
+            renderscriptDebuggable false
+            zipAlignEnabled true
+            signingConfig signingConfigs.release
+        }
+    }
+    applicationVariants.all { variant ->
+        variant.outputs.all { output ->
+            def file = output.outputFile
+            if (file != null && file.name.endsWith('.apk')) {
+                def fileName = new File("MJSDKDemo-" + defaultConfig.versionName + "-" + buildTime() + ".apk")
+                outputFileName = fileName
+            }
+        }
+    }
+}
+static def buildTime() {
+    def df = new SimpleDateFormat("yyyyMMddHH")
+    df.setTimeZone(TimeZone.getDefault())
+    return df.format(new Date())
+}
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation 'com.android.support:appcompat-v7:28.0.0'
+    //Rx申请权限
+    implementation 'com.github.tbruyelle:rxpermissions:0.10.2'
+    implementation 'io.reactivex:rxjava:1.2.0'
+    //SDK依赖
+    implementation 'com.mingjue.sdk:mjsdk:1.0.13'
+}
