@@ -2,6 +2,12 @@
 本SDK开发旨在提供方便快捷地获取汽车配件信息，通过VIN码或汽车品牌配置信息进行车辆定型后即可使用圈选或者配件名、OE等形式获取配件信息。
 
 本SDK使用时需要获取正式授权的license文件。商务合作请联系[明觉科技](http://www.dataenlighten.com)，SDK仅提供合作客户使用，违用必究!
+
+### 更新记录
+|时间|版本|更新内容|
+|----|-----|-----|
+|2018年11月19日|mjsdk:1.0.19<br>mjthinkkey:1.0.1<br>mjspeech:1.0.1|1.修复获取TopN无数据的bug<br>2.添加设备唯一标识UUID<br>3.规范上传字段|
+
 ## **使用步骤：**
 ### 0.拷贝申请到的license.lic（此文件请勿重命名）文件到assets目录中
 ### 1.添加依赖及权限：
@@ -20,7 +26,7 @@ allprojects {
  在项目module build.gradle配置脚本中dependencies添加
 ```java
     //SDK依赖
-    implementation 'com.mingjue.sdk:mjsdk:1.0.18'//SDK主体功能
+    implementation 'com.mingjue.sdk:mjsdk:1.0.19'//SDK主体功能
     implementation 'com.mingjue.sdk:mjthinkkey:1.0.1'//首字母联想模块独立
     implementation 'com.mingjue.sdk:mjspeech:1.0.1'//语音模块独立
 ```

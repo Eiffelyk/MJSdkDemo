@@ -60,7 +60,7 @@ dependencies {
     implementation 'io.reactivex:rxjava:1.2.0'
     implementation 'com.google.code.gson:gson:2.8.4'
     //SDK依赖
-    implementation 'com.mingjue.sdk:mjsdk:1.0.18'
+    implementation 'com.mingjue.sdk:mjsdk:1.0.19'
     implementation 'com.mingjue.sdk:mjthinkkey:1.0.1'
     implementation 'com.mingjue.sdk:mjspeech:1.0.1'
     //自适应布局
