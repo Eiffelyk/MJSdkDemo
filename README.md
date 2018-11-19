@@ -20,13 +20,9 @@ allprojects {
  在项目module build.gradle配置脚本中dependencies添加
 ```java
     //SDK依赖
-    implementation 'com.mingjue.sdk:mjsdk:1.0.17'
+    implementation 'com.mingjue.sdk:mjsdk:1.0.18'//SDK主体功能
     implementation 'com.mingjue.sdk:mjthinkkey:1.0.1'//首字母联想模块独立
     implementation 'com.mingjue.sdk:mjspeech:1.0.1'//语音模块独立
-    api 'com.mingjue.sdk:mjnetwork:1.0.2'//后续版本不需要这个依赖
-    api 'com.squareup.okhttp3:logging-interceptor:3.11.0'//后续版本不需要这个依赖
-    //自适应布局
-    implementation 'com.zhy:autolayout:1.4.5'//后续版本优化不需要这个
 ```
 
 #####     * 在项目AndroidManifest.xml配置脚本中添加权限

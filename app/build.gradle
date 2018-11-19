@@ -60,11 +60,9 @@ dependencies {
     implementation 'io.reactivex:rxjava:1.2.0'
     implementation 'com.google.code.gson:gson:2.8.4'
     //SDK依赖
-    implementation 'com.mingjue.sdk:mjsdk:1.0.17'
+    implementation 'com.mingjue.sdk:mjsdk:1.0.18'
     implementation 'com.mingjue.sdk:mjthinkkey:1.0.1'
     implementation 'com.mingjue.sdk:mjspeech:1.0.1'
-    api 'com.mingjue.sdk:mjnetwork:1.0.2'//后续版本不需要这个依赖
-    api 'com.squareup.okhttp3:logging-interceptor:3.11.0'//后续版本不需要这个依赖
     //自适应布局
     implementation 'com.zhy:autolayout:1.4.5'//后续版本优化不需要这个
 }
