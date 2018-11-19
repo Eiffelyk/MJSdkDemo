@@ -1,6 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#008577</color>
-    <color name="colorPrimaryDark">#00574B</color>
-    <color name="colorAccent">#D81B60</color>
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#FF4081</color>
+    <color name="black">#000000</color>
+    
+    <color name="transparent">#00000000</color>
+    <color name="blue">#880000aa</color>
+    <color name="white">#ffffff</color>
+    <color name="gray">#ececec</color>
+    <!--<color name="themecolor">#19206B</color>-->
+    <color name="themecolor">#FF6700</color>
+    
+    <color name="light_gray">#c9c9c9</color>
+    <color name="edittext_hint_color">#AAAEB3</color>
+    <!--OcrCheck字体选中时颜色-->
+    <color name="color_ocr_check_select">#EF5F00</color>
+    
+    <color name="color_my_key_font">#616366</color>
+    <color name="color_my_value_font">#000000</color>
+    <color name="color_my_divide_line">#E6ECF2</color>
+    <color name="color_my_bg_color">#F5F6F7</color>
+    <color name="color_my_no_read_font_shape_solid">#FF2020</color>
+    
+    <color name="main_bg_color">#F2F3F5</color>
+    <color name="color_current_score">#797C80</color>
+    <color name="color_seven_day_sum">#303233</color>
 </resources>
+
+

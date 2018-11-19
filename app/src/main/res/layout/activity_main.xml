@@ -25,7 +25,7 @@
         android:onClick="vinParse"
         android:id="@+id/vinParse"
         android:enabled="false"
-        android:text="VIN定型" />
+        android:text="进入VIN定型" />
 
     <Button
         android:layout_marginTop="20dp"
@@ -35,7 +35,9 @@
         android:textSize="20sp"
         android:onClick="gotoSpeech"
         android:enabled="false"
-        android:text="语音输入" />
+        android:text="语音输入"
+        android:visibility="gone"
+        />
 
     <Button
         android:layout_marginTop="20dp"
@@ -45,6 +47,8 @@
         android:enabled="false"
         android:id="@+id/gotoDraw"
         android:onClick="gotoDraw"
-        android:text="进入圈选" />
+        android:text="进入圈选"
+        android:visibility="gone"
+        />
 
 </LinearLayout>

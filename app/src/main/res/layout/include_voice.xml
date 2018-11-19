@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.zhy.autolayout.AutoRelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/ll_voice"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@android:color/white"
+    android:visibility="gone">
+
+    <TextView
+        android:id="@+id/tv_voice_alert"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="105px"
+        android:text="可以试试一次说多个配件哦"
+        android:textColor="@color/black" />
+
+    <com.zhy.autolayout.AutoRelativeLayout
+        android:id="@+id/bottom_rl"
+        android:layout_width="match_parent"
+        android:layout_height="210px"
+        android:layout_alignParentBottom="true"
+        android:background="@color/themecolor"
+        android:padding="36px">
+
+        <TextView
+            android:id="@+id/tv_voice"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_centerInParent="true"
+            android:background="@drawable/bg_voicelayout_normal"
+            android:gravity="center"
+            android:text="按住　说出配件名称"
+            android:textColor="@color/themecolor"
+            android:textSize="48px" />
+    </com.zhy.autolayout.AutoRelativeLayout>
+
+    <com.zhy.autolayout.AutoFrameLayout
+        android:id="@+id/frame_voice"
+        android:layout_width="450px"
+        android:layout_height="450px"
+        android:layout_centerInParent="true"
+        android:layout_marginBottom="90px">
+
+        <ImageView
+            android:id="@+id/img_voice1"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="fitCenter"
+            android:src="@drawable/voice_circle"
+            android:visibility="gone" />
+
+        <ImageView
+            android:id="@+id/img_voice2"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="24px"
+            android:scaleType="fitCenter"
+            android:src="@drawable/voice_circle"
+            android:visibility="gone" />
+
+        <ImageView
+            android:id="@+id/img_voice3"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="48px"
+            android:scaleType="fitCenter"
+            android:src="@drawable/voice_circle"
+            android:visibility="gone" />
+
+        <ImageView
+            android:id="@+id/img_voice4"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="72px"
+            android:scaleType="fitCenter"
+            android:src="@drawable/voice_circle"
+            android:visibility="gone" />
+
+        <ImageView
+            android:id="@+id/img_voice5"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="96px"
+            android:scaleType="fitCenter"
+            android:src="@drawable/voice_circle"
+            android:visibility="gone" />
+
+        <ImageView
+            android:id="@+id/img_voice6"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="120px"
+            android:scaleType="fitCenter"
+            android:src="@drawable/voice_circle"
+            android:visibility="gone" />
+
+        <ImageView
+            android:id="@+id/img_voice7"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="144px"
+            android:scaleType="fitCenter"
+            android:src="@drawable/voice_circle"
+            android:visibility="gone" />
+
+        <ImageView
+            android:id="@+id/img_voice_icon"
+            android:layout_width="162px"
+            android:layout_height="162px"
+            android:layout_gravity="center"
+            android:scaleType="fitCenter"
+            android:src="@drawable/voice_phone"
+            android:visibility="gone" />
+    </com.zhy.autolayout.AutoFrameLayout>
+
+    <com.zhy.autolayout.AutoRelativeLayout
+        android:id="@+id/time_count_rl"
+        android:layout_width="450px"
+        android:layout_height="450px"
+        android:layout_above="@+id/bottom_rl"
+        android:layout_below="@+id/frame_voice"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="30px"
+        android:layout_marginTop="30px"
+        android:visibility="gone">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="fitCenter"
+            android:src="@drawable/voice_circle"
+            android:visibility="visible" />
+
+        <TextView
+            android:id="@+id/time_count_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="5"
+            android:textColor="@color/white"
+            android:textSize="150px" />
+
+        <TextView
+            android:id="@+id/reminder_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/time_count_tv"
+            android:layout_centerHorizontal="true"
+            android:text="语音录入最多20S"
+            android:textSize="24px" />
+    </com.zhy.autolayout.AutoRelativeLayout>
+
+</com.zhy.autolayout.AutoRelativeLayout>

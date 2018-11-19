@@ -1,274 +1,357 @@
 package com.dataenlighten.aimjsdk.demo;
 
+import android.Manifest;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
+import android.widget.EditText;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+import android.widget.Toast;
 
-import com.mj.sdk.bean.DamageInfo;
-import com.mj.sdk.bean.EstimateByPartsRequestParams;
+import com.mj.mjspeech.SpeechListener;
+import com.mj.mjspeech.SpeechService;
 import com.mj.sdk.bean.QueryPartsByKeyRequesParams;
-import com.mj.sdk.bean.RecommendPartsRequesParams;
-import com.mj.sdk.bean.RelatedPartsRequesParams;
 import com.mj.sdk.callback.QueryCallBack;
 import com.mj.sdk.service.MJSdkService;
 import com.mj.sdk.view.DrawManager;
 import com.mj.sdk.view.DrawPartView;
 import com.mj.sdk.view.OnDrawQueryListener;
+import com.tbruyelle.rxpermissions2.Permission;
+import com.tbruyelle.rxpermissions2.RxPermissions;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.ArrayList;
-import java.util.List;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
 
 
-public class DrawActivity extends AppCompatActivity {
+public class DrawActivity extends AppCompatActivity implements View.OnClickListener{
 
     public static final String TAG = DrawActivity.class.getSimpleName();
     private DrawPartView drawPartView;
-    private boolean flag;
+    private boolean isBottom = false;
+
+    private EditText mEditText;                 //输入框
+    private ImageView mImgClear;                //清空输入
+    private ImageView mImageVoice;              //语音图标
+    private TextView mTvChannel1,mTvChannel2;
+
+    private RelativeLayout mCarVoiceLayout;     //语音搜索布局
+    private TextView mTextVoice;                //语音界面底部的TextView
+
+    //语音动画
+    private FrameLayout mVoiceAnimLayout;
+    private ImageView mVoiceAnimImage1;
+    private ImageView mVoiceAnimImage2;
+    private ImageView mVoiceAnimImage3;
+    private ImageView mVoiceAnimImage4;
+    private ImageView mVoiceAnimImage5;
+    private ImageView mVoiceAnimImage6;
+    private ImageView mVoiceAnimImage7;
+    private ImageView mVoiceAnimIcon;
+    private TextView mVoiceAnimTextView;
+
+    private boolean permissionGranted = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_draw);
-        drawPartView = findViewById(R.id.draw_drawview);
+        initDraw();
+        initView();
+        initEditText();
+    }
 
-        DrawManager.getInstance().setOnDrawQueryListener(new OnDrawQueryListener() {
+    private void initDraw(){
+        drawPartView = (DrawPartView) findViewById(R.id.draw_drawview);
+        DrawManager.getInstance().init(VinQueryActivity.carInfo);
+        DrawManager.getInstance().setOnDrawQueryListener(onDrawQueryListener);
+    }
+
+    private void initView(){
+        mImageVoice = (ImageView) findViewById(R.id.pic_voice);
+        mEditText = (EditText) findViewById(R.id.pic_word);
+        mImgClear = (ImageView) findViewById(R.id.img_clear);
+        mTvChannel1 = (TextView) findViewById(R.id.tv_channel1);
+        mTvChannel2 = (TextView) findViewById(R.id.tv_channel2);
+        mTvChannel1.setOnClickListener(this);
+        mTvChannel2.setOnClickListener(this);
+        mImageVoice.setOnClickListener(this);
+        mImgClear.setOnClickListener(this);
+
+        mCarVoiceLayout = (RelativeLayout) findViewById(R.id.ll_voice);
+        mCarVoiceLayout.setVisibility(View.GONE);
+
+        mTextVoice = (TextView) findViewById(R.id.tv_voice);
+        mVoiceAnimLayout = (FrameLayout) findViewById(R.id.frame_voice);
+        mVoiceAnimImage1 = (ImageView) findViewById(R.id.img_voice1);
+        mVoiceAnimImage2 = (ImageView) findViewById(R.id.img_voice2);
+        mVoiceAnimImage3 = (ImageView) findViewById(R.id.img_voice3);
+        mVoiceAnimImage4 = (ImageView) findViewById(R.id.img_voice4);
+        mVoiceAnimImage5 = (ImageView) findViewById(R.id.img_voice5);
+        mVoiceAnimImage6 = (ImageView) findViewById(R.id.img_voice6);
+        mVoiceAnimImage7 = (ImageView) findViewById(R.id.img_voice7);
+        mVoiceAnimIcon = (ImageView) findViewById(R.id.img_voice_icon);
+        mVoiceAnimTextView = (TextView) findViewById(R.id.tv_voice_alert);
+        SpeechService speechService = SpeechService.getInstance(getApplicationContext());
+        speechService.init(mTextVoice,speechListener);
+    }
+
+
+    private void initEditText(){
+        mEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
-            public void beforeQueryDraw() {
-
-            }
-
-            @Override
-            public void onDrawQuerySuccess(String result) {
-                Log.e(TAG,"onDrawQuerySuccess:"+result);
-
-                try {
-                    JSONObject object = new JSONObject(result);
-                    String ImagePrePath = object.optString("ImagePrePath");
-                    String context = object.optString("context");
-                    RecommendPartsRequesParams recommendPartsRequesParams = new RecommendPartsRequesParams();
-                    recommendPartsRequesParams.setCarInfo(DrawManager.getInstance().getCarInfo());
-                    recommendPartsRequesParams.setContext(context);
-
-                    List<String> nameList = new ArrayList<>();
-                    if ("8000001".equals(object.optString("code"))
-                           ) {
-                        JSONArray jay = object.optJSONArray("partList");
-                        int requiredLength = jay.length();
-                        if(requiredLength > 3){
-                            requiredLength = 3;
-                        }
-                        for (int i = 0; i < requiredLength; i++) {
-                            JSONObject sjob = jay.getJSONObject(i);
-                            nameList.add(sjob.optString("standardPartName"));
-//                            info.setSubstitute(sjob.optString("substitute"));
-//                            info.setImagePrePath(ImagePrePath);
-//                            info.setPartNo(sjob.optString("partNo"));
-//                            //判断reverse字段是否为null，为空则反转，否则不反转
-//                            if (TextUtils.isEmpty(sjob.optString("reverse"))
-//                                    && !TextUtils.isEmpty(sjob.optString("substitute"))
-//                                    && !sjob.optString("substitute").equals("null")) {
-//                                info.setSubstitute(sjob.optString("partNo"));
-//                                info.setPartNo(sjob.optString("substitute"));
-//                            }
-//                            info.setSubstitutePrice(sjob.optString("substitutePrice"));
-//                            info.setPartRefOnImage(sjob.optString("partRefOnImage"));
-//                            info.setPart_name(sjob.optString("part_name"));
-//                            info.setImage(sjob.optString("image"));
-//                            info.setPartprice(TextUtils.isEmpty(sjob.optString("partPrice")) || sjob.optString("partPrice").equals("null") ? new BigDecimal(-1) : formatDouble(sjob.optString("partPrice")));
-//                            selectionsList.add(info);
-                        }
-                    }
-                    recommendPartsRequesParams.setSelectedPartNameList(nameList);
-                    testRecommendPart(recommendPartsRequesParams);
-                } catch (JSONException e) {
-                    e.printStackTrace();
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                String character = mEditText.getText().toString().trim();
+                if(event != null && KeyEvent.KEYCODE_ENTER == event.getKeyCode()){
+                    queryPartsByKey(character, QueryPartsByKeyRequesParams.QueryMode.Manual_Input);
+                    return true;
                 }
-
-            }
-
-            @Override
-            public void onDrawQueryFailure(Exception e) {
-                Log.e(TAG,"onDrawQueryFailure:",e);
-            }
-        });
-    }
-
-
-
-    private void testRecommendPart(RecommendPartsRequesParams partsRequesParams){
-        MJSdkService.getInstance().queryRecommendPartsBySelected(partsRequesParams, new QueryCallBack() {
-            @Override
-            public void onSuccess(String responseBody) {
-                Log.e(TAG,"testRecommendPart onSuccess: " + responseBody);
-
-                RelatedPartsRequesParams relatedPartsRequesParams = new RelatedPartsRequesParams();
-                relatedPartsRequesParams.setCarInfo(DrawManager.getInstance().getCarInfo());
-
-                JSONObject object = null;
-                try {
-                    object = new JSONObject(responseBody);
-
-//                    String ImagePrePath = object.optString("");
-                    relatedPartsRequesParams.setPrefix("");
-
-                    if ( "8000001".equals(object.optString("code"))) {
-                        JSONArray jay = object.optJSONArray("partList");
-                        int requiredLength = jay.length();
-                        if(requiredLength > 1){
-                            requiredLength = 1;
-                        }
-                        for (int i = 0; i < requiredLength; i++) {
-                            JSONObject sjob = jay.getJSONObject(i);
-                            String imageName = sjob.optString("image");
-//                            relatedPartsRequesParams.setPartNo(sjob.optString("partNumber"));
-                            relatedPartsRequesParams.setImageName(imageName);
-                            relatedPartsRequesParams.setPrefix("bmw");
-                            testThumbnail(imageName);
-                            testEPCImg(MainActivity.prefix,imageName);
-                        }
-                    }
-                    testRelatedPart(relatedPartsRequesParams);
-
-                    QueryPartsByKeyRequesParams partsByKeyRequesParams = new QueryPartsByKeyRequesParams();
-                    partsByKeyRequesParams.setCarInfo(DrawManager.getInstance().getCarInfo());
-                    partsByKeyRequesParams.setInput("保险杠");
-                    partsByKeyRequesParams.setQueryMode(QueryPartsByKeyRequesParams.QueryMode.Manual_Input);
-
-                    testPartsByKey(partsByKeyRequesParams);
-                } catch (JSONException e) {
-                    e.printStackTrace();
+                if ((actionId == EditorInfo.IME_ACTION_SEARCH || actionId == EditorInfo.IME_ACTION_DONE) && character.length() > 0
+                        ) {
+                    queryPartsByKey(character, QueryPartsByKeyRequesParams.QueryMode.Manual_Input);
+                    return true;
                 }
-
-
-            }
-
-            @Override
-            public void onFail(Exception e) {
-                Log.e(TAG,"testRecommendPart onFail: " ,e);
+                return false;
             }
         });
-    }
-
-
-    private void testRelatedPart(RelatedPartsRequesParams params){
-        MJSdkService.getInstance().queryRelatedParts(params, new QueryCallBack() {
+        mEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
-            public void onSuccess(String responseBody) {
-                Log.e(TAG,"testRelatedPart onSuccess: " + responseBody);
-            }
-
-            @Override
-            public void onFail(Exception e) {
-                Log.e(TAG,"testRecommendPart onFail: " ,e);
+            public void onFocusChange(View view, boolean b) {
+                if (b) {
+                    mEditText.setHint("");
+                } else
+                    mEditText.setHint("输入配件名称");
             }
         });
-    }
 
-
-    private void testThumbnail(String imageName){
-       /* MJSdkService.getInstance().getPartThumbnail(imageName, new GetBitmapCallback() {
+        mEditText.addTextChangedListener(new TextWatcher() {
             @Override
-            public void onSuccess(Bitmap bitmap) {
-                ((ImageView)findViewById(R.id.img_thumbnail)).setImageBitmap(bitmap);
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
             }
 
             @Override
-            public void onFailure(Exception e) {
-                Log.e(TAG,"testThumbnail onFail: " ,e);
-            }
-        });*/
-    }
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
 
-    /**
-     * new GetBitmapCallback() {
-    @Override
-    public void onSuccess(Bitmap bitmap) {
-    ((ImageView)findViewById(R.id.img_epc)).setImageBitmap(bitmap);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (s.length() == 0) {
+                    mImgClear.setVisibility(View.GONE);
+                    return;
+                }
+                if (s.length() > 0 && mImgClear.getVisibility() != View.VISIBLE) {
+                    mImgClear.setVisibility(View.VISIBLE);
+                }
+            }
+        });
+
+        mEditText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mCarVoiceLayout.setVisibility(View.GONE);
+            }
+        });
     }
 
     @Override
-    public void onFailure(Exception e) {
-    Log.e(TAG,"testEPCImg onFail: " ,e);
-    }
-    }
-     * @param preName
-     * @param imageName
-     */
-    private void testEPCImg(String preName,String imageName){
-        MJSdkService.getInstance().queryPartEPCImg(imageName, preName, new QueryCallBack() {
-            @Override
-            public void onSuccess(String responseBody) {
-               Log.e(TAG,"queryPartEPCImg responseBody:"+responseBody);
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if(keyCode == KeyEvent.KEYCODE_BACK){
+            if(mCarVoiceLayout.isShown()){
+                mCarVoiceLayout.setVisibility(View.GONE);
+                return true;
             }
+        }
+        return super.onKeyDown(keyCode, event);
+    }
 
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()){
+            case R.id.img_clear:
+                mEditText.setText("");
+                break;
+            case R.id.pic_voice:
+                mCarVoiceLayout.setVisibility(View.VISIBLE);
+                reqestPermission();
+                break;
+            case R.id.tv_channel1:
+            case R.id.tv_channel2:
+                mTvChannel1.setBackgroundResource(R.drawable.shape_channel_unselect);
+                mTvChannel2.setBackgroundResource(R.drawable.shape_channel_unselect);
+                mTvChannel1.setTextColor(getResources().getColor(R.color.black));
+                mTvChannel2.setTextColor(getResources().getColor(R.color.black));
+                view.setBackgroundResource(R.drawable.shape_channel_select);
+                ((TextView) view).setTextColor(getResources().getColor(R.color.themecolor));
+                if (view.getId() == R.id.tv_channel2) {
+                    if (isBottom)
+                        return;
+                } else {
+                    if (!isBottom)
+                        return;
+                }
+                isBottom = !isBottom;
+                drawPartView.turnSurfaceChassis(!isBottom);
+                break;
+
+        }
+    }
+
+    private void reqestPermission(){
+        if(permissionGranted){
+            return;
+        }
+        RxPermissions rxPermissions = new RxPermissions(this);
+        Disposable disposable = rxPermissions.requestEach(
+                Manifest.permission.READ_EXTERNAL_STORAGE,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                Manifest.permission.RECORD_AUDIO).subscribe(new Consumer<Permission>() {
             @Override
-            public void onFail(Exception e) {
-                Log.e(TAG,"queryPartEPCImg onFail:",e);
+            public void accept(Permission permission) throws Exception {
+                if (permission.granted) {
+                    permissionGranted = true;
+                } else if (permission.shouldShowRequestPermissionRationale) {
+                    Log.e(TAG, "testRxPermission CallBack onPermissionsDenied() : " + permission.name + "request denied");
+                } else {
+                    Log.e(TAG, "testRxPermission CallBack onPermissionsDenied() : this " + permission.name + " is denied " +
+                            "and never ask again");
+                }
             }
         });
     }
 
-    public void testPartsByKey(final QueryPartsByKeyRequesParams params){
+    private SpeechListener speechListener = new SpeechListener() {
+        @Override
+        public void speechInitFailure(Exception e) {
+            mVoiceAnimIcon.setVisibility(View.GONE);
+            mVoiceAnimLayout.setVisibility(View.GONE);
+        }
+
+        @Override
+        public void speechRecongnizing(String content) {
+            mEditText.setText(content);
+        }
+
+        @Override
+        public void speechRecongnizeEnd() {
+            queryPartsByKey(mEditText.getText().toString().trim(), QueryPartsByKeyRequesParams.QueryMode.Voice);
+        }
+
+        @Override
+        public void speechStart() {
+            mVoiceAnimLayout.setVisibility(View.VISIBLE);
+            mVoiceAnimTextView.setText("可以试试一次说多个配件哦");
+            mTextVoice.setBackground(getResources().getDrawable(R.drawable.bg_voicelayout_press));
+        }
+
+        @Override
+        public void speechFinish() {
+            mVoiceAnimTextView.setText("可以试试一次说多个配件哦");
+            mTextVoice.setBackground(getResources().getDrawable(R.drawable.bg_voicelayout_normal));
+            mVoiceAnimIcon.setVisibility(View.GONE);
+            mVoiceAnimLayout.setVisibility(View.GONE);
+        }
+
+        @Override
+        public void onVolumeChanged(int i, byte[] bytes) {
+            mVoiceAnimIcon.setVisibility(View.VISIBLE);
+            mVoiceAnimImage1.setVisibility(View.VISIBLE);
+            mVoiceAnimImage2.setVisibility(View.GONE);
+            mVoiceAnimImage3.setVisibility(View.GONE);
+            mVoiceAnimImage4.setVisibility(View.GONE);
+            mVoiceAnimImage5.setVisibility(View.GONE);
+            mVoiceAnimImage6.setVisibility(View.GONE);
+            mVoiceAnimImage7.setVisibility(View.GONE);
+            if (i > 0)
+                mVoiceAnimImage7.setVisibility(View.VISIBLE);
+            if (i > 5)
+                mVoiceAnimImage6.setVisibility(View.VISIBLE);
+            if (i > 10)
+                mVoiceAnimImage5.setVisibility(View.VISIBLE);
+            if (i > 15)
+                mVoiceAnimImage4.setVisibility(View.VISIBLE);
+            if (i > 20)
+                mVoiceAnimImage3.setVisibility(View.VISIBLE);
+            if (i > 25)
+                mVoiceAnimImage2.setVisibility(View.VISIBLE);
+        }
+    };
+
+    private OnDrawQueryListener onDrawQueryListener = new OnDrawQueryListener() {
+        @Override
+        public void beforeQueryDraw() {
+
+        }
+
+        @Override
+        public void onDrawQuerySuccess(String result) {
+            Log.e(TAG,"onDrawQuerySuccess:"+result);
+
+          /*  try {
+                JSONObject object = new JSONObject(result);
+                String context = object.optString("context");
+                RecommendPartsRequesParams recommendPartsRequesParams = new RecommendPartsRequesParams();
+                recommendPartsRequesParams.setCarInfo(DrawManager.getInstance().getCarInfo());
+                recommendPartsRequesParams.setContext(context);
+
+                List<String> nameList = new ArrayList<>();
+                if ("0000".equals(object.optString("code"))
+                        ) {
+                    JSONArray jay = object.optJSONArray("partList");
+                    int requiredLength = jay.length();
+                    if(requiredLength > 3){
+                        requiredLength = 3;
+                    }
+                    for (int i = 0; i < requiredLength; i++) {
+                        JSONObject sjob = jay.getJSONObject(i);
+                        nameList.add(sjob.optString("standardPartName"));
+                    }
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }*/
+            Intent intent = new Intent(DrawActivity.this, PartListActivity.class);
+            intent.putExtra("partListResult",result);
+            startActivity(intent);
+        }
+
+        @Override
+        public void onDrawQueryFailure(Exception e) {
+            Log.e(TAG,"onDrawQueryFailure:",e);
+        }
+    };
+
+    private void queryPartsByKey(String key, QueryPartsByKeyRequesParams.QueryMode queryMode){
+        QueryPartsByKeyRequesParams params = new QueryPartsByKeyRequesParams();
+        params.setQueryMode(queryMode);
+        params.setInput(key);
+        params.setSecondQuery(true);
+        params.setParentChild(true);
+        params.setAutoChooseOption(true);
+        params.setContainOperation(true);
+        params.setCarInfo(VinQueryActivity.carInfo);
         MJSdkService.getInstance().queryPartsByKey(params, new QueryCallBack() {
             @Override
             public void onSuccess(String responseBody) {
-                EstimateByPartsRequestParams eParams = new EstimateByPartsRequestParams();
-                eParams.setCarInfo(DrawManager.getInstance().getCarInfo());
-                try {
-                    JSONObject jsonObject = new JSONObject(responseBody);
-                    JSONArray partList = jsonObject.optJSONArray("partList");
-                    List<DamageInfo> dList = new ArrayList<>();
-                    for(int i = 0; i < partList.length(); i++){
-                        DamageInfo damageInfo = new DamageInfo();
-                        JSONObject partObj = partList.optJSONObject(i);
-                        damageInfo.setPartId(partObj.optString("standardPartName"));
-                        damageInfo.setStandardPartName(partObj.optString("standardPartName"));
-                        damageInfo.setLaborCost("-1");
-                        damageInfo.setPartPrice(partObj.optString("partPrice"));
-                        JSONArray operationArr = partObj.optJSONArray("inoperables");
-                        JSONObject operationObj = operationArr.optJSONObject(0);
-                        damageInfo.setOperation(operationObj.optString("operation"));
-                        dList.add(damageInfo);
-                    }
-                    eParams.setDamageInfoList(dList);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                testEstimate(eParams);
+                Intent intent = new Intent(DrawActivity.this, PartListActivity.class);
+                intent.putExtra("partListResult",responseBody);
+                startActivity(intent);
             }
 
             @Override
             public void onFail(Exception e) {
-
+                Toast.makeText(DrawActivity.this, "queryPartsByKey failed ! msg:"+ e.getMessage(),Toast.LENGTH_LONG).show();
             }
         });
     }
 
-
-    public void testEstimate(EstimateByPartsRequestParams params){
-        MJSdkService.getInstance().estimateByParts(params, new QueryCallBack() {
-            @Override
-            public void onSuccess(String responseBody) {
-
-            }
-
-            @Override
-            public void onFail(Exception e) {
-
-            }
-        });
-    }
-
-
-
-
-    public void change(View view) {
-        flag = !flag;
-        drawPartView.turnSurfaceChassis(flag);
-    }
 }

@@ -19,17 +19,16 @@ allprojects {
 #####     *Gradle
  在项目module build.gradle配置脚本中dependencies添加
 ```java
-    implementation 'com.mingjue.sdk:mjsdk:1.0.13'
+    //SDK依赖
+    implementation 'com.mingjue.sdk:mjsdk:1.0.17'
+    implementation 'com.mingjue.sdk:mjthinkkey:1.0.1'//首字母联想模块独立
+    implementation 'com.mingjue.sdk:mjspeech:1.0.1'//语音模块独立
+    api 'com.mingjue.sdk:mjnetwork:1.0.2'//后续版本不需要这个依赖
+    api 'com.squareup.okhttp3:logging-interceptor:3.11.0'//后续版本不需要这个依赖
+    //自适应布局
+    implementation 'com.zhy:autolayout:1.4.5'//后续版本优化不需要这个
 ```
-#####     * 或Maven
-```
-<dependency>
-  <groupId>com.mingjue.sdk</groupId>
-  <artifactId>mjsdk</artifactId>
-  <version>1.0.13</version>
-  <type>pom</type>
-</dependency>
-```
+
 #####     * 在项目AndroidManifest.xml配置脚本中添加权限
 ```java
 
@@ -44,69 +43,201 @@ allprojects {
 
 #####     * 初始化
 ```java
+/**
+ * 服务初始化。
+ * @param ctx
+ * @param  onSdkInitLisener 初始化回调
+ * @throws  LicenseNotFoundException 未发现license异常
+ */
 void init(Context ctx,OnSdkInitLisener onSdkInitLisener) throws LisenceNotFoundException;
 ```
 
 #####     * VIN解析
+
 ```java
+/**
+ * VIN解析，返回对应VIN码的车辆信息
+ * @param vin VIN码
+ * @param queryCallBack 请求回调。
+ */
 void VINQuery(String vin, QueryCallBack queryCallBack);
 ```
-
-#####     * 智能推荐接口（圈选页面调用，不需要独立调用）
-
- ```java
-void queryPartsByDraw(String paramsJsonStr,QueryCallBack queryCallBack);
-```
+[详细信息](https://github.com/Eiffelyk/MJSdkDemo/blob/master/doc/function/VINQuery.md).
 
 #####     * 智能推荐接口
 ```java
+/**
+ * 智能推荐接口
+ * @param params 智能推荐参数
+ * @param queryCallBack
+ */
 void queryRecommendPartsBySelected(RecommendPartsRequesParams params, QueryCallBack queryCallBack);
 ```
+[详细信息](https://github.com/Eiffelyk/MJSdkDemo/blob/master/doc/function/queryRecommendPartsBySelected.md).
 
-#####     * 语音定损服务。
-```java
-void initSpeechEngine(Context context, View touchView, SpeechListener speechListener);
-```
+##### * 查询关联配件
 
-#####      * 查询关联配件
 ```java
+/**
+ * 查询关联配件
+ * @param params 关联配件查询参数
+ * @param queryCallBack
+ */
 void queryRelatedParts(RelatedPartsRequesParams params, QueryCallBack queryCallBack);
 ```
+[详细信息](https://github.com/Eiffelyk/MJSdkDemo/blob/master/doc/function/queryRelatedParts.md).
 
-#####      * 根据关键字查询。
+#####      * 通过字符串查询配件，支持返回操作项。
+
 ```java
+/**
+ * 根据关键字查询配件。
+ * @param params  关键字查询参数。
+ * @param queryCallBack
+ */
 void queryPartsByKey(QueryPartsByKeyRequesParams params, QueryCallBack queryCallBack);
 ```
-
-#####     * 通过字符串查询配件，支持返回操作项
-```java
-void queryThinkedKeys(String input, String[] standardNames, QueryThinKedKeysCallback queryThinKedKeysCallback);
-```
+[详细信息](https://github.com/Eiffelyk/MJSdkDemo/blob/master/doc/function/queryPartsByKey.md).
 
 #####     * 获取配件EPC装配图
+
 ```java
+/**
+ * 获取配件EPC装配图
+ * @param imageName  配件图片名
+ * @param imagePrefix  车辆图片前缀 ，在VIN定型接口中获取。
+ * @param queryCallBack
+ */
 void queryPartEPCImg(String imageName,String imagePrefix, QueryCallBack queryCallBack);
 ```
+[详细信息](https://github.com/Eiffelyk/MJSdkDemo/blob/master/doc/function/queryPartEPCImg.md).
+
 
 #####     * 生成圈选小汽车 View
+
 第一种方式---直接使用返回的DrawPartView动态填充界面
 ```java
+/**
+ * 生成圈选小汽车 View
+ * @param context  Android上下文
+ * @param carInfo   车辆信息。
+ * @param onDrawQueryListener
+ * @return DrawPartView  圈选的view
+ */
 DrawPartView createDrawPartView(Context context,CarInfo carInfo, OnDrawQueryListener onDrawQueryListener);
 ```
-第二种方式---布局xml文件种直接引用DrawPartView
+第二种方式---布局xml文件种直接引用DrawPartView，并且设置车辆信息以及回调
 ```java
-DrawManager.getInstance().setOnDrawQueryListener(OnDrawQueryListener listener);
+//先设置车辆信息
+DrawManager.getInstance().init(carInfo);
+DrawManager.getInstance().setOnDrawQueryListener（listener）
+//再初始化DrawPartView
 ```
 注：turnSurfaceChassis方法为切换全车件和底盘件
 ```java
 drawPartView.turnSurfaceChassis(boolean flag);
 ```
-#####     * 通过已选配件智能定损
+##### * 语音定损服务。
+
+添加依赖：
+
 ```java
+ implementation 'com.mingjue.sdk:mjspeech:1.0.1'
+```
+
+接口定义：
+
+```java
+/**
+ * 语音定损服务。
+ * @param context  android上下文，建议用app的context
+ * @param touchView  长按说话的view
+ * @param speechListener 语音回调
+ */
+SpeechService speechService = SpeechService.getInstance(context);
+speechService.init(View touchView, SpeechListener speechListener);
+```
+
+#####     * 通过已选配件智能定损
+
+```java
+/**
+ * 通过已选配件智能定损
+ * @param params 定损的参数。
+ * @param queryCallBack
+ */
 void estimateByParts(EstimateByPartsRequestParams params, QueryCallBack queryCallBack);
 ```
 
+参数说明：
+
+```java
+/**
+ * 智能定损接口参数
+ */
+public class EstimateByPartsRequestParams {
+    /** 车辆信息*/
+    private CarInfo carInfo = null;
+    /** 修理厂id*/
+    private String repairer = null;
+    /** 维修类型 如"送修" */
+    private String repairType = null;
+    /** 保险公司id*/
+    private String insurer = null;
+    /** 选择的配件工项信息列表 */
+    private List<DamageInfo> damageInfoList = null;
+}
+```
+
+```java
+public class DamageInfo {
+    /** 配件选择的工项 */
+    private String operation = null;
+    /** 配件Id */
+    private String partId = null;
+    /** 配件标准名称 */
+    private String standardPartName = null;
+    /** 配件损伤程度 */
+    private String severity = null;
+    /** 配件价格 */
+    private String partPrice = null;
+    /** 工时价格 */
+    private String laborCost = null;
+}
+```
+
+
+
+##### * 首字符关联配件名。
+
+添加依赖：
+
+```java
+ implementation 'com.mingjue.sdk:mjthinkkey:1.0.1'
+```
+
+接口定义：
+
+```java
+	/**
+     * 首字母关联配件名
+     * @param input   用户输入的首字母串
+     * @param names   VIN定型里面返回的top1000 配件名称数组
+     * @param callBack  查询回调
+     */
+    void queryThinkedKeys(String input, String[] names, QueryThinKedKeysCallback callBack) 
+```
+
+接口调用：
+
+```java
+MJInitialService.getInstance().queryThinkedKeys(input,names,queryThinKedKeysCallback）
+```
+
+
+
 ### 3.混淆文件：
+
 ```java
     #-libraryjars libs/okhttp3
     -dontwarn okhttp3.**
@@ -116,3 +247,23 @@ void estimateByParts(EstimateByPartsRequestParams params, QueryCallBack queryCal
     -dontwarn okio.**
     -keep class okio.** { *; }
 ```
+
+### 4.接口错误码表
+
+| 错误码 | m描述                   |
+| ------ | ----------------------- |
+| 0000   | 成功                    |
+| 1001   | VIN不合法               |
+| 1002   | VIN不支持               |
+| 1003   | 非乘用车                |
+| 1004   | VIN错误                 |
+| 1005   | VIN无法解析             |
+| 1006   | 无权查看该品牌数据      |
+| 1011   | 请求VIN的配件数据不存在 |
+| 1012   | 该车无此配件            |
+| 1013   | 请求图片不存在          |
+| 1014   | 推荐配件数据不存在      |
+| 1015   | 该车型查不到配件        |
+| 9007   | 后台API异常             |
+|        |                         |
+

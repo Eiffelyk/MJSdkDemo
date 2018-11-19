@@ -6,8 +6,6 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
-import com.mj.sdk.service.MJSdkService;
-import com.mj.sdk.speech.SpeechListener;
 import com.tbruyelle.rxpermissions2.Permission;
 import com.tbruyelle.rxpermissions2.RxPermissions;
 
@@ -37,17 +35,23 @@ public class SpeechActivity extends AppCompatActivity {
             @Override
             public void accept(Permission permission) throws Exception {
                 if (permission.granted) {
-                    MJSdkService.getInstance().initSpeechEngine(SpeechActivity.this, findViewById(R.id.tv_touch_speek_view), new SpeechListener() {
+                 /*   MJSdkService.getInstance().initSpeechEngine(SpeechActivity.this, findViewById(R.id.tv_touch_speek_view), new SpeechListener() {
                         @Override
                         public void speechInitFailure(Exception e) {
                             Log.e(TAG, "speechInitFailure Exception:", e);
                         }
 
                         @Override
-                        public void speechRecongnize(String content) {
+                        public void speechRecongnizing(String content) {
                             Log.e(TAG, "speechRecongnize content:" + content);
                             recongnizeStr = content;
                         }
+
+                        @Override
+                        public void speechRecongnizeEnd() {
+
+                        }
+
 
                         @Override
                         public void speechStart() {
@@ -57,8 +61,14 @@ public class SpeechActivity extends AppCompatActivity {
                         @Override
                         public void speechFinish() {
                             Log.e(TAG, "speechFinish content:" + recongnizeStr);
+                            //在此处调用 查询配件接口。
                         }
-                    });
+
+                        @Override
+                        public void onVolumeChanged(int i, byte[] bytes) {
+
+                        }
+                    });*/
                 } else if (permission.shouldShowRequestPermissionRationale) {
                     Log.e(TAG, "testRxPermission CallBack onPermissionsDenied() : " + permission.name + "request denied");
 //                            ToastUtil.showShort(instance, "拒绝权限，等待下次询问哦");

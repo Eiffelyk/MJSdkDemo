@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.zhy.autolayout.AutoLinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    >
+    
+    <com.zhy.autolayout.AutoRelativeLayout
+        android:layout_marginLeft="100px"
+        android:layout_marginRight="100px"
+        android:layout_width="match_parent"
+        android:layout_height="172.8px"
+        android:layout_marginTop="57.6px"
+        android:background="@drawable/edittext_vin">
+        
+        <EditText
+            android:id="@+id/vin_input_vin"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@null"
+            android:cursorVisible="true"
+            android:paddingLeft="28.8px"
+            android:gravity="center_vertical"
+            android:imeOptions="actionSearch"
+            android:hint="输入17位车架号进行VIN定型"
+            android:inputType="text"
+            android:textColorHint="#AAAEB3"
+            android:textCursorDrawable="@drawable/edittext_cursor"
+            android:textSize="48.96px" />
+        
+        <ImageView
+            android:id="@+id/img_clear"
+            android:layout_width="64px"
+            android:layout_height="64px"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="20px"
+            android:layout_centerVertical="true"
+            android:background="@drawable/edittext_clear"
+            android:scaleType="fitCenter"
+            android:src="@drawable/icon_clear" />
+    </com.zhy.autolayout.AutoRelativeLayout>
+    
+    <TextView
+        android:id="@+id/tv_vin_result"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:layout_marginBottom="50px"
+        android:layout_marginTop="50px"
+        android:textColor="@color/color_current_score"
+        android:background="@drawable/shape_stroke_bg"
+        android:layout_marginLeft="100px"
+        android:layout_marginRight="100px"
+        android:textSize="36px"
+        android:padding="10px"
+        />
+    
+    <Button
+        android:id="@+id/btn_next"
+        android:layout_marginLeft="100px"
+        android:layout_marginRight="100px"
+        android:layout_width="match_parent"
+        android:layout_height="123px"
+        android:text="进入圈选页面"
+        android:layout_marginBottom="30px"
+        android:textColor="@color/white"
+        android:background="@drawable/shape_solid_bg"
+        />
+    
+</com.zhy.autolayout.AutoLinearLayout>
