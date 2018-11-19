@@ -32,8 +32,8 @@ allprojects {
     <uses-permission android:name="android.permission.INTERNET" />
     <!-- 获取手机录音机使用权限，听写、识别、语义理解需要用到这些权限 -->
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <!--获取网络状态，请求网络前判断是否有网络-->
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 ```
 ### 2.初始化以及方法调用：
 
@@ -261,5 +261,4 @@ MJInitialService.getInstance().queryThinkedKeys(input,names,queryThinKedKeysCall
 | 1014   | 推荐配件数据不存在      |
 | 1015   | 该车型查不到配件        |
 | 9007   | 后台API异常             |
-|        |                         |
 
