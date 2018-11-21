@@ -60,9 +60,10 @@ void init(Context ctx,OnSdkInitLisener onSdkInitLisener) throws LisenceNotFoundE
 /**
  * VIN解析，返回对应VIN码的车辆信息
  * @param vin VIN码
+  * @param partList 获取常用配件个数（0不获取[默认]，1获取top300，2获取top600，3获取topAll）
  * @param queryCallBack 请求回调。
  */
-void VINQuery(String vin, QueryCallBack queryCallBack);
+void VINQuery(String vin,int partList, QueryCallBack queryCallBack);
 ```
 [详细信息](https://github.com/Eiffelyk/MJSdkDemo/blob/master/doc/function/VINQuery.md).
 
@@ -253,7 +254,7 @@ MJInitialService.getInstance().queryThinkedKeys(input,names,queryThinKedKeysCall
 ### 4.接口错误码表
 
 | 错误码 | m描述                   |
-| ------ | ----------------------- |
+| ------ | ------------------ |
 | 0000   | 成功                    |
 | 1001   | VIN不合法               |
 | 1002   | VIN不支持               |
