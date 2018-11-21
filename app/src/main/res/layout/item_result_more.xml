@@ -6,33 +6,33 @@
 
     <View
         android:layout_width="match_parent"
-        android:layout_height="1.44px"
+        android:layout_height="0.5dp"
         android:visibility="gone"
         android:background="#DADFE6" />
 
     <RelativeLayout
         android:id="@+id/rl_detail"
         android:layout_width="match_parent"
-        android:layout_height="286px"
+        android:layout_height="90dp"
         android:layout_gravity="center_vertical"
         android:background="@color/white"
         android:padding="28px">
 
         <ImageView
             android:id="@+id/item_img"
-            android:layout_width="230px"
-            android:layout_height="230px"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
             android:background="@drawable/shape_img_bg"
-            android:padding="2px"
+            android:padding="0.5dp"
            />
 
 
-        <com.zhy.autolayout.AutoLinearLayout
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_marginBottom="15px"
-            android:layout_marginLeft="23px"
-            android:layout_marginTop="15px"
+            android:layout_marginBottom="5dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="5dp"
             android:layout_toRightOf="@id/item_img"
             android:orientation="vertical"
             >
@@ -45,7 +45,7 @@
                 android:layout_weight="1"
                 android:text="前大灯总成（右）"
                 android:textColor="#303233"
-                android:textSize="40px" />
+                android:textSize="14dp" />
             
             <TextView
                 android:id="@+id/tv_oe"
@@ -53,7 +53,7 @@
                 android:layout_height="0dp"
                 android:layout_weight="1"
                 android:textColor="#000"
-                android:textSize="48px"
+                android:textSize="14dp"
                 android:gravity="center_vertical"
                 />
             
@@ -63,31 +63,31 @@
                 android:layout_height="0dp"
                 android:layout_weight="1"
                 android:textColor="#000"
-                android:textSize="48px"
+                android:textSize="14dp"
                 android:gravity="center_vertical"
                 />
 
-        </com.zhy.autolayout.AutoLinearLayout>
+        </LinearLayout>
 
         <ImageView
             android:id="@+id/iv_detail"
-            android:layout_width="20px"
-            android:layout_height="34px"
+            android:layout_width="8dp"
+            android:layout_height="15dp"
             android:layout_alignParentRight="true"
             android:layout_centerInParent="true"
-            android:layout_marginLeft="14px"
+            android:layout_marginLeft="10dp"
             android:src="@drawable/icon_gray_detail_arrow" />
     </RelativeLayout>
 
     <View
         android:layout_width="match_parent"
-        android:layout_height="1.44px"
+        android:layout_height="0.5dp"
         android:visibility="gone"
         android:background="#DADFE6" />
 
     <View
         android:id="@+id/item_divider_view"
         android:layout_width="match_parent"
-        android:layout_height="28.8px"
+        android:layout_height="4dp"
         android:background="#EFF0F3" />
 </LinearLayout>

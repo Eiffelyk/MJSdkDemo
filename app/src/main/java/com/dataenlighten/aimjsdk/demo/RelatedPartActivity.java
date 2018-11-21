@@ -14,6 +14,7 @@ import com.bumptech.glide.Priority;
 import com.dataenlighten.aimjsdk.demo.Adapter.ResultAdapter;
 import com.dataenlighten.aimjsdk.demo.bean.PartBean;
 import com.dataenlighten.aimjsdk.demo.bean.QueryPartsResult;
+import com.dataenlighten.aimjsdk.demo.custom.GlideApp;
 import com.dataenlighten.aimjsdk.demo.custom.ZoomImageView;
 import com.dataenlighten.aimjsdk.demo.utils.GsonUtils;
 import com.mj.sdk.bean.RelatedPartsRequesParams;
@@ -31,11 +32,11 @@ public class RelatedPartActivity extends AppCompatActivity {
 
     public static final String TAG = RelatedPartActivity.class.getSimpleName();
 
-    private TextView partName,partOE,partPrice,partImgNumber;
+    private TextView partName, partOE, partPrice, partImgNumber;
     private RecyclerView recyclerView;
     private ZoomImageView zoomImageView;
     private List<PartBean> partBeanList = new ArrayList<>();
-    private  ResultAdapter adapter;
+    private ResultAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,7 +46,7 @@ public class RelatedPartActivity extends AppCompatActivity {
         initData();
     }
 
-    private void initView(){
+    private void initView() {
         partName = findViewById(R.id.tv_partname);
         partOE = findViewById(R.id.tv_oe);
         partImgNumber = findViewById(R.id.tv_number);
@@ -53,34 +54,34 @@ public class RelatedPartActivity extends AppCompatActivity {
         recyclerView = findViewById(R.id.rlv_deatil);
         zoomImageView = findViewById(R.id.img_detail);
         recyclerView.setLayoutManager(new LinearLayoutManager(RelatedPartActivity.this));
-        adapter = new ResultAdapter(RelatedPartActivity.this, partBeanList,false);
+        adapter = new ResultAdapter(RelatedPartActivity.this, partBeanList, false);
         recyclerView.setAdapter(adapter);
     }
 
-    private void initData(){
+    private void initData() {
         Intent intent = getIntent();
-        if(intent != null && intent.getExtras() != null){
+        if (intent != null && intent.getExtras() != null) {
             Bundle bundle = intent.getExtras();
-            PartBean bean =  bundle.getParcelable("partBean");
+            PartBean bean = bundle.getParcelable("partBean");
 
             partName.setText(bean.getStandardPartName());
             partOE.setText("OE号: " + bean.getPartNumber());
-            partPrice.setText("4s价格: "+bean.getPartPrice());
-            partImgNumber.setText("图中编号: "+ bean.getPartRefOnImage());
+            partPrice.setText("4s价格: " + bean.getPartPrice());
+            partImgNumber.setText("图中编号: " + bean.getPartRefOnImage());
 
-            getEPCImg(bean.getImage(),VinQueryActivity.carInfo.getPrefix());
+            getEPCImg(bean.getImage(), VinQueryActivity.carInfo.getPrefix());
             queryRelatedParts(bean.getImage());
         }
     }
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if(keyCode == KeyEvent.KEYCODE_BACK){
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
         }
         return super.onKeyDown(keyCode, event);
     }
 
-    private void getEPCImg(String imageName, String prefix){
+    private void getEPCImg(String imageName, String prefix) {
         MJSdkService.getInstance().queryPartEPCImg(imageName, prefix, new QueryCallBack() {
             @Override
             public void onSuccess(final String responseBody) {
@@ -92,7 +93,7 @@ public class RelatedPartActivity extends AppCompatActivity {
                             String code = jsonObject.getString("code");
                             if ("0000".equals(code)) {
                                 String imageInfo = jsonObject.optString("imageInfo");
-                                Glide.with(RelatedPartActivity.this)
+                                GlideApp.with(RelatedPartActivity.this)
                                         .load(imageInfo)
                                         .priority(Priority.LOW)
                                         .placeholder(R.drawable.placeholder)
@@ -109,12 +110,12 @@ public class RelatedPartActivity extends AppCompatActivity {
 
             @Override
             public void onFail(Exception e) {
-                Toast.makeText(RelatedPartActivity.this, "getEPCImg failed ! msg:"+ e.getMessage(),Toast.LENGTH_LONG).show();
+                Toast.makeText(RelatedPartActivity.this, "getEPCImg failed ! msg:" + e.getMessage(), Toast.LENGTH_LONG).show();
             }
         });
     }
 
-    private void queryRelatedParts(String imageName){
+    private void queryRelatedParts(String imageName) {
         RelatedPartsRequesParams partsRequesParams = new RelatedPartsRequesParams();
         partsRequesParams.setImageName(imageName);
         partsRequesParams.setCarInfo(VinQueryActivity.carInfo);
@@ -124,7 +125,7 @@ public class RelatedPartActivity extends AppCompatActivity {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        QueryPartsResult queryPartsResult = GsonUtils.parseJsonToBean(responseBody,QueryPartsResult.class);
+                        QueryPartsResult queryPartsResult = GsonUtils.parseJsonToBean(responseBody, QueryPartsResult.class);
                         partBeanList.clear();
                         partBeanList.addAll(queryPartsResult.getPartList());
                         adapter.notifyDataSetChanged();
@@ -134,32 +135,8 @@ public class RelatedPartActivity extends AppCompatActivity {
 
             @Override
             public void onFail(Exception e) {
-                Toast.makeText(RelatedPartActivity.this, "queryRelatedParts failed ! msg:"+ e.getMessage(),Toast.LENGTH_LONG).show();
+                Toast.makeText(RelatedPartActivity.this, "queryRelatedParts failed ! msg:" + e.getMessage(), Toast.LENGTH_LONG).show();
             }
         });
     }
-
-    /*private void queryPartsByKey(String key, QueryPartsByKeyRequesParams.QueryMode queryMode){
-        QueryPartsByKeyRequesParams params = new QueryPartsByKeyRequesParams();
-        params.setQueryMode(queryMode);
-        params.setInput(key);
-        params.setSecondQuery(false);
-        params.setParentChild(true);
-        params.setAutoChooseOption(false);
-        params.setContainOperation(false);
-        params.setCarInfo(VinQueryActivity.carInfo);
-        MJSdkService.getInstance().queryPartsByKey(params, new QueryCallBack() {
-            @Override
-            public void onSuccess(String responseBody) {
-            }
-
-            @Override
-            public void onFail(Exception e) {
-                Toast.makeText(RelatedPartActivity.this, "queryPartsByKey failed ! msg:"+ e.getMessage(),Toast.LENGTH_LONG).show();
-            }
-        });
-    }*/
-
-
-
 }

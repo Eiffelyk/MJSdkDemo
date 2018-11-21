@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.zhy.autolayout.AutoLinearLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
@@ -7,20 +7,20 @@
     android:orientation="vertical"
     >
     
-    <com.zhy.autolayout.AutoLinearLayout
+    <LinearLayout
         android:background="@drawable/edittext_search_white"
-        android:layout_marginLeft="100px"
-        android:layout_marginRight="100px"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
         android:layout_width="match_parent"
-        android:layout_height="172.8px"
-        android:layout_marginTop="57.6px"
+        android:layout_height="42dp"
+        android:layout_marginTop="10dp"
         android:focusableInTouchMode="true"
         android:focusable="true"
         android:orientation="horizontal">
         
         <EditText
             android:id="@+id/pic_word"
-            android:padding="10px"
+            android:padding="4dp"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -34,55 +34,55 @@
             android:singleLine="true"
             android:textColorHint="@color/edittext_hint_color"
             android:textCursorDrawable="@drawable/edittext_cursor"
-            android:textSize="43.2px" />
+            android:textSize="18dp" />
         
         <ImageView
             android:id="@+id/img_clear"
-            android:layout_width="68px"
-            android:layout_height="68px"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
             android:layout_gravity="center_vertical"
             android:src="@drawable/clear"
             android:visibility="gone" />
         <View
-            android:layout_width="3px"
+            android:layout_width="2dp"
             android:layout_height="match_parent"
             android:background="@color/themecolor"/>
         
         <ImageView
             android:id="@+id/pic_voice"
-            android:layout_width="114px"
+            android:layout_width="42dp"
             android:layout_height="match_parent"
-            android:padding="24px"
-            android:scaleType="fitCenter"
+            android:padding="5dp"
             android:src="@drawable/yuyinicon" />
-    </com.zhy.autolayout.AutoLinearLayout>
+    </LinearLayout>
     
-    <com.zhy.autolayout.AutoFrameLayout
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
         >
     
-        <com.zhy.autolayout.AutoLinearLayout
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
             >
-            <com.zhy.autolayout.AutoLinearLayout
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="127px"
+                android:layout_height="40dp"
                 android:orientation="horizontal"
-                android:layout_marginLeft="50px"
-                android:paddingLeft="28.8px"
-                android:paddingRight="28.8px"
-                android:paddingTop="28.8px">
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:paddingTop="10dp">
         
-                <com.zhy.autolayout.AutoLinearLayout
+                <LinearLayout
                     android:id="@+id/car_switch"
-                    android:layout_width="412px"
+                    android:layout_width="90dp"
                     android:layout_height="match_parent"
                     android:background="@drawable/shape_channel_ll"
-                    android:padding="5px">
+                    android:padding="2dp">
             
                     <TextView
                         android:id="@+id/tv_channel1"
@@ -105,7 +105,7 @@
                         android:textColor="@android:color/black"
                         android:textSize="14.4dp" />
         
-                </com.zhy.autolayout.AutoLinearLayout>
+                </LinearLayout>
         
                 <View
                     android:layout_width="0dp"
@@ -117,10 +117,10 @@
                     android:layout_height="match_parent"
                     android:gravity="center_vertical"
                     android:text="请在汽车图受损的区域画圈" />
-            </com.zhy.autolayout.AutoLinearLayout>
+            </LinearLayout>
     
             <com.mj.sdk.view.DrawPartView
-                android:layout_marginTop="30px"
+                android:layout_marginTop="10dp"
                 android:id="@+id/draw_drawview"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
@@ -132,8 +132,19 @@
                 app:draw_paint_color="#00a"
                 app:draw_paint_size="3dp"/>
             
-        </com.zhy.autolayout.AutoLinearLayout>
+        </LinearLayout>
+    
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rlv_cthink"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/shape_stroke_bg"
+            android:visibility="gone"
+            />
         
         <include layout="@layout/include_voice" />
-    </com.zhy.autolayout.AutoFrameLayout>
-</com.zhy.autolayout.AutoLinearLayout>
+        
+    </FrameLayout>
+</LinearLayout>

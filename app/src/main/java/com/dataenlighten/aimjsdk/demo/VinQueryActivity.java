@@ -21,6 +21,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+import java.util.List;
+
 
 public class VinQueryActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -33,6 +36,7 @@ public class VinQueryActivity extends AppCompatActivity implements View.OnClickL
 
     private boolean vinParseComplete = false;
     public static CarInfo carInfo = null;
+    private List<String> standardNames = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,7 +76,7 @@ public class VinQueryActivity extends AppCompatActivity implements View.OnClickL
         vinParseComplete = false;
         resultTxtView.setText("");
         final String VIN =  mEditText.getText().toString().trim().toUpperCase();
-        MJSdkService.getInstance().VINQuery(VIN, 0, new QueryCallBack() {
+        MJSdkService.getInstance().VINQuery(VIN, 3, new QueryCallBack() {
             @Override
             public void onSuccess(String responseBody) {
                 resultTxtView.setText(responseBody);
@@ -98,7 +102,10 @@ public class VinQueryActivity extends AppCompatActivity implements View.OnClickL
                     Toast.makeText(VinQueryActivity.this, "未完成VIN解析",Toast.LENGTH_LONG).show();
                     return;
                 }
-                startActivity(new Intent(VinQueryActivity.this,DrawActivity.class));
+                Intent intent = new Intent(VinQueryActivity.this,DrawActivity.class);
+                String[] names = new String[standardNames.size()];
+                intent.putExtra("topN",  standardNames.toArray(names));
+                startActivity(intent);
                 break;
 
         }
@@ -112,7 +119,6 @@ public class VinQueryActivity extends AppCompatActivity implements View.OnClickL
 
             if (rcode.equals("0000")) {
                 CarInfo mCarInfo = new CarInfo();
-
                 JSONArray jay = job.optJSONArray("vehicleList");
                 for (int i = 0; i < jay.length(); i++) {
                     JSONObject obj = jay.optJSONObject(i);
@@ -134,6 +140,14 @@ public class VinQueryActivity extends AppCompatActivity implements View.OnClickL
                     mCarInfo.setPrefix(sjob.optString("prefix"));
                     carInfo = mCarInfo;
                     vinParseComplete = true;
+
+                    JSONArray jsonArray = obj.optJSONArray("partNameListAsList");
+                    standardNames.clear();
+                    if(jsonArray != null){
+                        for(int index = 0 ;index < jsonArray.length(); index++){
+                            standardNames.add(jsonArray.optString(index));
+                        }
+                    }
                     return;
                 }
             }

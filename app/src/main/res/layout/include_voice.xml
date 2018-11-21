@@ -1,28 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.zhy.autolayout.AutoRelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/ll_voice"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@android:color/white"
-    android:visibility="gone">
+    android:visibility="gone"
+    android:background="@android:color/white">
 
     <TextView
         android:id="@+id/tv_voice_alert"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="105px"
+        android:layout_marginTop="30dp"
         android:text="可以试试一次说多个配件哦"
         android:textColor="@color/black" />
 
-    <com.zhy.autolayout.AutoRelativeLayout
+    <RelativeLayout
         android:id="@+id/bottom_rl"
         android:layout_width="match_parent"
-        android:layout_height="210px"
+        android:layout_height="60dp"
         android:layout_alignParentBottom="true"
         android:background="@color/themecolor"
-        android:padding="36px">
+        android:padding="10dp">
 
         <TextView
             android:id="@+id/tv_voice"
@@ -33,15 +33,15 @@
             android:gravity="center"
             android:text="按住　说出配件名称"
             android:textColor="@color/themecolor"
-            android:textSize="48px" />
-    </com.zhy.autolayout.AutoRelativeLayout>
+            android:textSize="16dp" />
+    </RelativeLayout>
 
-    <com.zhy.autolayout.AutoFrameLayout
+    <FrameLayout
         android:id="@+id/frame_voice"
-        android:layout_width="450px"
-        android:layout_height="450px"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
         android:layout_centerInParent="true"
-        android:layout_marginBottom="90px">
+        android:layout_marginBottom="30dp">
 
         <ImageView
             android:id="@+id/img_voice1"
@@ -55,7 +55,7 @@
             android:id="@+id/img_voice2"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_margin="24px"
+            android:layout_margin="10dp"
             android:scaleType="fitCenter"
             android:src="@drawable/voice_circle"
             android:visibility="gone" />
@@ -64,7 +64,7 @@
             android:id="@+id/img_voice3"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_margin="48px"
+            android:layout_margin="20dp"
             android:scaleType="fitCenter"
             android:src="@drawable/voice_circle"
             android:visibility="gone" />
@@ -73,7 +73,7 @@
             android:id="@+id/img_voice4"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_margin="72px"
+            android:layout_margin="25dp"
             android:scaleType="fitCenter"
             android:src="@drawable/voice_circle"
             android:visibility="gone" />
@@ -82,7 +82,7 @@
             android:id="@+id/img_voice5"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_margin="96px"
+            android:layout_margin="30dp"
             android:scaleType="fitCenter"
             android:src="@drawable/voice_circle"
             android:visibility="gone" />
@@ -91,7 +91,7 @@
             android:id="@+id/img_voice6"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_margin="120px"
+            android:layout_margin="35dp"
             android:scaleType="fitCenter"
             android:src="@drawable/voice_circle"
             android:visibility="gone" />
@@ -100,30 +100,30 @@
             android:id="@+id/img_voice7"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_margin="144px"
+            android:layout_margin="40dp"
             android:scaleType="fitCenter"
             android:src="@drawable/voice_circle"
-            android:visibility="gone" />
+            android:visibility="gone"/>
 
         <ImageView
             android:id="@+id/img_voice_icon"
-            android:layout_width="162px"
-            android:layout_height="162px"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
             android:layout_gravity="center"
             android:scaleType="fitCenter"
-            android:src="@drawable/voice_phone"
-            android:visibility="gone" />
-    </com.zhy.autolayout.AutoFrameLayout>
+            android:src="@drawable/voice_phone" 
+            android:visibility="gone"/>
+    </FrameLayout>
 
-    <com.zhy.autolayout.AutoRelativeLayout
+    <RelativeLayout
         android:id="@+id/time_count_rl"
-        android:layout_width="450px"
-        android:layout_height="450px"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
         android:layout_above="@+id/bottom_rl"
         android:layout_below="@+id/frame_voice"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="30px"
-        android:layout_marginTop="30px"
+        android:layout_marginBottom="8dp"
+        android:layout_marginTop="8dp"
         android:visibility="gone">
 
         <ImageView
@@ -140,7 +140,7 @@
             android:layout_centerInParent="true"
             android:text="5"
             android:textColor="@color/white"
-            android:textSize="150px" />
+            android:textSize="50dp" />
 
         <TextView
             android:id="@+id/reminder_tv"
@@ -149,7 +149,7 @@
             android:layout_below="@+id/time_count_tv"
             android:layout_centerHorizontal="true"
             android:text="语音录入最多20S"
-            android:textSize="24px" />
-    </com.zhy.autolayout.AutoRelativeLayout>
+            android:textSize="9dp" />
+    </RelativeLayout>
 
-</com.zhy.autolayout.AutoRelativeLayout>
+</RelativeLayout>

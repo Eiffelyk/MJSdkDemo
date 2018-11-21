@@ -4,7 +4,10 @@ import android.Manifest;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -17,6 +20,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.dataenlighten.aimjsdk.demo.Adapter.CThinkAdapter;
 import com.mj.mjspeech.SpeechListener;
 import com.mj.mjspeech.SpeechService;
 import com.mj.sdk.bean.QueryPartsByKeyRequesParams;
@@ -25,14 +29,20 @@ import com.mj.sdk.service.MJSdkService;
 import com.mj.sdk.view.DrawManager;
 import com.mj.sdk.view.DrawPartView;
 import com.mj.sdk.view.OnDrawQueryListener;
+import com.mj.thinkkey.MJInitialService;
+import com.mj.thinkkey.QueryThinKedKeysCallback;
+import com.mjai.sdk_android.utils.NativeUtils;
 import com.tbruyelle.rxpermissions2.Permission;
 import com.tbruyelle.rxpermissions2.RxPermissions;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 
 
-public class DrawActivity extends AppCompatActivity implements View.OnClickListener{
+public class DrawActivity extends AppCompatActivity implements View.OnClickListener {
 
     public static final String TAG = DrawActivity.class.getSimpleName();
     private DrawPartView drawPartView;
@@ -41,7 +51,7 @@ public class DrawActivity extends AppCompatActivity implements View.OnClickListe
     private EditText mEditText;                 //输入框
     private ImageView mImgClear;                //清空输入
     private ImageView mImageVoice;              //语音图标
-    private TextView mTvChannel1,mTvChannel2;
+    private TextView mTvChannel1, mTvChannel2;
 
     private RelativeLayout mCarVoiceLayout;     //语音搜索布局
     private TextView mTextVoice;                //语音界面底部的TextView
@@ -58,7 +68,15 @@ public class DrawActivity extends AppCompatActivity implements View.OnClickListe
     private ImageView mVoiceAnimIcon;
     private TextView mVoiceAnimTextView;
 
+    private RecyclerView thinkKeyRecycleView;
+
     private boolean permissionGranted = false;
+
+    //文字是否处于联想状态
+    private boolean mIsCThink = true;
+    private CThinkAdapter mCThinkAdapter = null;
+    private List<String> mCThinkList = null;
+    private String[] standardNames = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,15 +85,16 @@ public class DrawActivity extends AppCompatActivity implements View.OnClickListe
         initDraw();
         initView();
         initEditText();
+        initData();
     }
 
-    private void initDraw(){
+    private void initDraw() {
         drawPartView = (DrawPartView) findViewById(R.id.draw_drawview);
         DrawManager.getInstance().init(VinQueryActivity.carInfo);
         DrawManager.getInstance().setOnDrawQueryListener(onDrawQueryListener);
     }
 
-    private void initView(){
+    private void initView() {
         mImageVoice = (ImageView) findViewById(R.id.pic_voice);
         mEditText = (EditText) findViewById(R.id.pic_word);
         mImgClear = (ImageView) findViewById(R.id.img_clear);
@@ -101,22 +120,71 @@ public class DrawActivity extends AppCompatActivity implements View.OnClickListe
         mVoiceAnimIcon = (ImageView) findViewById(R.id.img_voice_icon);
         mVoiceAnimTextView = (TextView) findViewById(R.id.tv_voice_alert);
         SpeechService speechService = SpeechService.getInstance(getApplicationContext());
-        speechService.init(mTextVoice,speechListener);
+        speechService.init(mTextVoice, speechListener);
+
+        thinkKeyRecycleView = findViewById(R.id.rlv_cthink);
+        thinkKeyRecycleView.setLayoutManager(new LinearLayoutManager(this));
+        mCThinkList = new ArrayList<>();
+        mCThinkAdapter = new CThinkAdapter(DrawActivity.this, mCThinkList, new CThinkAdapter.OnThinkItemClickListener() {
+            @Override
+            public void onThinkItemClick(String key) {
+                mEditText.setText(key);
+                thinkKeyRecycleView.setVisibility(View.GONE);
+                queryPartsByKey(key, false, QueryPartsByKeyRequesParams.QueryMode.Initial);
+            }
+        });
+        thinkKeyRecycleView.setAdapter(mCThinkAdapter);
     }
 
+    private void initData() {
+        Intent intent = getIntent();
+        if (intent == null || !intent.hasExtra("topN")) {
+            return;
+        }
+        standardNames = intent.getStringArrayExtra("topN");
+        Log.e("standardNames", standardNames.toString());
+    }
 
-    private void initEditText(){
+    private void testThinkedKey(String input, String[] names) {
+        MJInitialService.getInstance().queryThinkedKeys(input, names, new QueryThinKedKeysCallback() {
+            @Override
+            public void onCallback(final List<String> list) {
+                mCThinkList.clear();
+                mCThinkList.addAll(list);
+                mCThinkAdapter.notifyDataSetChanged();
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (!list.isEmpty()) {
+                            thinkKeyRecycleView.setVisibility(View.VISIBLE);
+                        } else {
+                            thinkKeyRecycleView.setVisibility(View.GONE);
+                        }
+                    }
+                });
+            }
+
+            @Override
+            public void onException(Exception e) {
+                mCThinkList.clear();
+                mCThinkAdapter.notifyDataSetChanged();
+                thinkKeyRecycleView.setVisibility(View.GONE);
+            }
+        });
+    }
+
+    private void initEditText() {
         mEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 String character = mEditText.getText().toString().trim();
-                if(event != null && KeyEvent.KEYCODE_ENTER == event.getKeyCode()){
-                    queryPartsByKey(character, QueryPartsByKeyRequesParams.QueryMode.Manual_Input);
+                if (event != null && KeyEvent.KEYCODE_ENTER == event.getKeyCode()) {
+                    queryPartsByKey(character, true, QueryPartsByKeyRequesParams.QueryMode.Manual_Input);
                     return true;
                 }
                 if ((actionId == EditorInfo.IME_ACTION_SEARCH || actionId == EditorInfo.IME_ACTION_DONE) && character.length() > 0
                         ) {
-                    queryPartsByKey(character, QueryPartsByKeyRequesParams.QueryMode.Manual_Input);
+                    queryPartsByKey(character, true, QueryPartsByKeyRequesParams.QueryMode.Manual_Input);
                     return true;
                 }
                 return false;
@@ -147,10 +215,15 @@ public class DrawActivity extends AppCompatActivity implements View.OnClickListe
             public void afterTextChanged(Editable s) {
                 if (s.length() == 0) {
                     mImgClear.setVisibility(View.GONE);
+                    thinkKeyRecycleView.setVisibility(View.GONE);
                     return;
                 }
                 if (s.length() > 0 && mImgClear.getVisibility() != View.VISIBLE) {
                     mImgClear.setVisibility(View.VISIBLE);
+                }
+
+                if (mIsCThink && !TextUtils.isEmpty(s.toString())) {
+                    testThinkedKey(s.toString(), standardNames);
                 }
             }
         });
@@ -159,14 +232,15 @@ public class DrawActivity extends AppCompatActivity implements View.OnClickListe
             @Override
             public void onClick(View view) {
                 mCarVoiceLayout.setVisibility(View.GONE);
+                mIsCThink = true;
             }
         });
     }
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if(keyCode == KeyEvent.KEYCODE_BACK){
-            if(mCarVoiceLayout.isShown()){
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            if (mCarVoiceLayout.isShown()) {
                 mCarVoiceLayout.setVisibility(View.GONE);
                 return true;
             }
@@ -176,7 +250,7 @@ public class DrawActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onClick(View view) {
-        switch (view.getId()){
+        switch (view.getId()) {
             case R.id.img_clear:
                 mEditText.setText("");
                 break;
@@ -206,8 +280,8 @@ public class DrawActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-    private void reqestPermission(){
-        if(permissionGranted){
+    private void reqestPermission() {
+        if (permissionGranted) {
             return;
         }
         RxPermissions rxPermissions = new RxPermissions(this);
@@ -239,11 +313,13 @@ public class DrawActivity extends AppCompatActivity implements View.OnClickListe
         @Override
         public void speechRecongnizing(String content) {
             mEditText.setText(content);
+            mIsCThink = false;
         }
 
         @Override
         public void speechRecongnizeEnd() {
-            queryPartsByKey(mEditText.getText().toString().trim(), QueryPartsByKeyRequesParams.QueryMode.Voice);
+            queryPartsByKey(mEditText.getText().toString().trim(), true, QueryPartsByKeyRequesParams.QueryMode.Voice);
+            mIsCThink = true;
         }
 
         @Override
@@ -251,6 +327,7 @@ public class DrawActivity extends AppCompatActivity implements View.OnClickListe
             mVoiceAnimLayout.setVisibility(View.VISIBLE);
             mVoiceAnimTextView.setText("可以试试一次说多个配件哦");
             mTextVoice.setBackground(getResources().getDrawable(R.drawable.bg_voicelayout_press));
+            mIsCThink = false;
         }
 
         @Override
@@ -259,6 +336,7 @@ public class DrawActivity extends AppCompatActivity implements View.OnClickListe
             mTextVoice.setBackground(getResources().getDrawable(R.drawable.bg_voicelayout_normal));
             mVoiceAnimIcon.setVisibility(View.GONE);
             mVoiceAnimLayout.setVisibility(View.GONE);
+            mIsCThink = true;
         }
 
         @Override
@@ -294,48 +372,23 @@ public class DrawActivity extends AppCompatActivity implements View.OnClickListe
 
         @Override
         public void onDrawQuerySuccess(String result) {
-            Log.e(TAG,"onDrawQuerySuccess:"+result);
-
-          /*  try {
-                JSONObject object = new JSONObject(result);
-                String context = object.optString("context");
-                RecommendPartsRequesParams recommendPartsRequesParams = new RecommendPartsRequesParams();
-                recommendPartsRequesParams.setCarInfo(DrawManager.getInstance().getCarInfo());
-                recommendPartsRequesParams.setContext(context);
-
-                List<String> nameList = new ArrayList<>();
-                if ("0000".equals(object.optString("code"))
-                        ) {
-                    JSONArray jay = object.optJSONArray("partList");
-                    int requiredLength = jay.length();
-                    if(requiredLength > 3){
-                        requiredLength = 3;
-                    }
-                    for (int i = 0; i < requiredLength; i++) {
-                        JSONObject sjob = jay.getJSONObject(i);
-                        nameList.add(sjob.optString("standardPartName"));
-                    }
-                }
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }*/
             Intent intent = new Intent(DrawActivity.this, PartListActivity.class);
-            intent.putExtra("partListResult",result);
+            intent.putExtra("partListResult", result);
             startActivity(intent);
         }
 
         @Override
         public void onDrawQueryFailure(Exception e) {
-            Log.e(TAG,"onDrawQueryFailure:",e);
+            Log.e(TAG, "onDrawQueryFailure:", e);
         }
     };
 
-    private void queryPartsByKey(String key, QueryPartsByKeyRequesParams.QueryMode queryMode){
+    private void queryPartsByKey(String key, boolean isSecondQuery, QueryPartsByKeyRequesParams.QueryMode queryMode) {
         QueryPartsByKeyRequesParams params = new QueryPartsByKeyRequesParams();
         params.setQueryMode(queryMode);
         params.setInput(key);
-        params.setSecondQuery(true);
-        params.setParentChild(true);
+        params.setSecondQuery(isSecondQuery);
+        params.setParentChild(false);
         params.setAutoChooseOption(true);
         params.setContainOperation(true);
         params.setCarInfo(VinQueryActivity.carInfo);
@@ -343,13 +396,13 @@ public class DrawActivity extends AppCompatActivity implements View.OnClickListe
             @Override
             public void onSuccess(String responseBody) {
                 Intent intent = new Intent(DrawActivity.this, PartListActivity.class);
-                intent.putExtra("partListResult",responseBody);
+                intent.putExtra("partListResult", responseBody);
                 startActivity(intent);
             }
 
             @Override
             public void onFail(Exception e) {
-                Toast.makeText(DrawActivity.this, "queryPartsByKey failed ! msg:"+ e.getMessage(),Toast.LENGTH_LONG).show();
+                Toast.makeText(DrawActivity.this, "queryPartsByKey failed ! msg:" + e.getMessage(), Toast.LENGTH_LONG).show();
             }
         });
     }

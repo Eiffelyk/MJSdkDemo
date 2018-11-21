@@ -9,16 +9,16 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 import com.dataenlighten.aimjsdk.demo.R;
 import com.dataenlighten.aimjsdk.demo.RelatedPartActivity;
 import com.dataenlighten.aimjsdk.demo.bean.PartBean;
+import com.dataenlighten.aimjsdk.demo.custom.GlideApp;
 
 /**
  * Created by kangjian on 2017/7/30.
  */
 
-public class ResultMoreViewHolder  extends RecyclerView.ViewHolder  {
+public class ResultMoreViewHolder extends RecyclerView.ViewHolder {
     private TextView mName;
     private TextView mOe;
     private TextView price;
@@ -37,7 +37,7 @@ public class ResultMoreViewHolder  extends RecyclerView.ViewHolder  {
         mOe = itemView.findViewById(R.id.tv_oe);
         price = itemView.findViewById(R.id.tv_price);
         this.canClick = canClick;
-        if(!canClick){
+        if (!canClick) {
             nextImg.setVisibility(View.GONE);
             mDetailRl.setClickable(false);
         }
@@ -45,8 +45,11 @@ public class ResultMoreViewHolder  extends RecyclerView.ViewHolder  {
 
     public void setData(final Context context, final PartBean partBean) {
         //首先查看是否被添加到SelectManager中
-        if(partBean.getThumbnailImage() != null){
-            Glide.with(context)
+        if (partBean.getThumbnailImage() != null) {
+            if (partBean.getThumbnailImage().startsWith("http://")) {//android P下载文件不支持http。后续这个字段会直接返回https的
+                partBean.setThumbnailImage(partBean.getThumbnailImage().replace("http://", "https://"));
+            }
+            GlideApp.with(context)
                     .load(partBean.getThumbnailImage())
                     .placeholder(R.drawable.placeholder)//图片加载出来前，显示的图片
                     .error(R.drawable.placeholder)
@@ -59,12 +62,12 @@ public class ResultMoreViewHolder  extends RecyclerView.ViewHolder  {
         mDetailRl.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(!canClick){
+                if (!canClick) {
                     return;
                 }
-                Intent intent=new Intent(context, RelatedPartActivity.class);
+                Intent intent = new Intent(context, RelatedPartActivity.class);
                 Bundle bundle = new Bundle();
-                bundle.putParcelable("partBean",partBean);
+                bundle.putParcelable("partBean", partBean);
                 intent.putExtras(bundle);
                 context.startActivity(intent);
             }
