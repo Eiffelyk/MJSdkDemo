@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
@@ -27,7 +28,7 @@ import java.util.List;
 
 public class VinQueryActivity extends AppCompatActivity implements View.OnClickListener {
 
-    public static final String TAG = VinQueryActivity.class.getSimpleName();
+    public static final String TAG = "MJSDKDemo";
 
     private EditText mEditText;//输入的控件
     private ImageView clearBtn;
@@ -45,7 +46,7 @@ public class VinQueryActivity extends AppCompatActivity implements View.OnClickL
         initView();
     }
 
-    private void initView(){
+    private void initView() {
         mEditText = (EditText) findViewById(R.id.vin_input_vin);
         resultTxtView = (TextView) findViewById(R.id.tv_vin_result);
         clearBtn = (ImageView) findViewById(R.id.img_clear);
@@ -57,7 +58,7 @@ public class VinQueryActivity extends AppCompatActivity implements View.OnClickL
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 String character = mEditText.getText().toString().trim();
-                if(event != null && KeyEvent.KEYCODE_ENTER == event.getKeyCode()){
+                if (event != null && KeyEvent.KEYCODE_ENTER == event.getKeyCode()) {
                     vinQuery();
                     return true;
                 }
@@ -72,39 +73,46 @@ public class VinQueryActivity extends AppCompatActivity implements View.OnClickL
     }
 
 
-    private void vinQuery(){
+    private void vinQuery() {
         vinParseComplete = false;
         resultTxtView.setText("");
-        final String VIN =  mEditText.getText().toString().trim().toUpperCase();
+        final String VIN = mEditText.getText().toString().trim().toUpperCase();
         MJSdkService.getInstance().VINQuery(VIN, 3, new QueryCallBack() {
             @Override
-            public void onSuccess(String responseBody) {
-                resultTxtView.setText(responseBody);
-                parseVINInfo(responseBody,VIN);
+            public void onSuccess(final String responseBody) {
+                Log.d(TAG, "VINQuery onSuccess: " + responseBody);
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        resultTxtView.setText(responseBody);
+                        parseVINInfo(responseBody, VIN);
+                    }
+                });
             }
 
             @Override
             public void onFail(Exception e) {
-                Toast.makeText(VinQueryActivity.this, e.getMessage(),Toast.LENGTH_LONG).show();
+                e.printStackTrace();
+                Toast.makeText(VinQueryActivity.this,"VINQuery failed "+ e.getMessage(), Toast.LENGTH_LONG).show();
             }
         });
     }
 
     @Override
     public void onClick(View view) {
-        switch (view.getId()){
+        switch (view.getId()) {
             case R.id.img_clear:
                 mEditText.setText("");
                 mEditText.setSelection(mEditText.getText().toString().length());
                 break;
             case R.id.btn_next:
-                if(!vinParseComplete){
-                    Toast.makeText(VinQueryActivity.this, "未完成VIN解析",Toast.LENGTH_LONG).show();
+                if (!vinParseComplete) {
+                    Toast.makeText(VinQueryActivity.this, "未完成VIN解析", Toast.LENGTH_LONG).show();
                     return;
                 }
-                Intent intent = new Intent(VinQueryActivity.this,DrawActivity.class);
+                Intent intent = new Intent(VinQueryActivity.this, DrawActivity.class);
                 String[] names = new String[standardNames.size()];
-                intent.putExtra("topN",  standardNames.toArray(names));
+                intent.putExtra("topN", standardNames.toArray(names));
                 startActivity(intent);
                 break;
 
@@ -143,8 +151,8 @@ public class VinQueryActivity extends AppCompatActivity implements View.OnClickL
 
                     JSONArray jsonArray = obj.optJSONArray("partNameListAsList");
                     standardNames.clear();
-                    if(jsonArray != null){
-                        for(int index = 0 ;index < jsonArray.length(); index++){
+                    if (jsonArray != null) {
+                        for (int index = 0; index < jsonArray.length(); index++) {
                             standardNames.add(jsonArray.optString(index));
                         }
                     }

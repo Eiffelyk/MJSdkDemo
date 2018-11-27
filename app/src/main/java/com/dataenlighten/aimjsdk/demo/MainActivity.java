@@ -26,7 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
-    public static final String TAG = MainActivity.class.getSimpleName();
+    public static final String TAG = "MJSDKDemo";
     private Button vinParse;
 
     @Override
@@ -41,35 +41,29 @@ public class MainActivity extends AppCompatActivity {
             MJSdkService.getInstance().init(getApplication(), new OnSdkInitLisener() {
                 @Override
                 public void onInitSuccess() {
-
+                    Log.d(TAG, "init onInitSuccess: ");
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
                             vinParse.setEnabled(true);
-                            Toast.makeText(MainActivity.this, "初始化成功",Toast.LENGTH_SHORT).show();
+                            Toast.makeText(MainActivity.this, "初始化成功", Toast.LENGTH_SHORT).show();
                         }
                     });
-                    Log.e(TAG, "onInitSuccess");
                 }
 
                 @Override
                 public void onInitFailure(Exception e) {
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            Toast.makeText(MainActivity.this, "初始化失败",Toast.LENGTH_SHORT).show();
-                        }
-                    });
-
-                    Log.e(TAG, "onInitFailure", e);
+                    e.printStackTrace();
+                    Toast.makeText(MainActivity.this, "初始化失败", Toast.LENGTH_SHORT).show();
                 }
             });
         } catch (LicenseNotFoundException e) {
             e.printStackTrace();
+            Toast.makeText(MainActivity.this, "LicenseNotFoundException" +e.getMessage(), Toast.LENGTH_SHORT).show();
         }
     }
 
     public void vinParse(View view) {
-        startActivity(new Intent(this,VinQueryActivity.class));
+        startActivity(new Intent(this, VinQueryActivity.class));
     }
 }

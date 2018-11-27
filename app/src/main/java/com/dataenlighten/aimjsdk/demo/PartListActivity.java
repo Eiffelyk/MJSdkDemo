@@ -36,7 +36,7 @@ import java.util.List;
 
 public class PartListActivity extends AppCompatActivity implements View.OnClickListener {
 
-    public static final String TAG = PartListActivity.class.getSimpleName();
+    public static final String TAG = "MJSDKDemo";
 
     private RecyclerView mRecyclerView;
     private ResultAdapter adapter;
@@ -108,6 +108,7 @@ public class PartListActivity extends AppCompatActivity implements View.OnClickL
         MJSdkService.getInstance().queryRecommendPartsBySelected(recommendPartsRequesParams, new QueryCallBack() {
             @Override
             public void onSuccess(final String responseBody) {
+                Log.d(TAG, "queryRecommendPartsBySelected onSuccess: "+responseBody);
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -124,6 +125,7 @@ public class PartListActivity extends AppCompatActivity implements View.OnClickL
 
             @Override
             public void onFail(Exception e) {
+                e.printStackTrace();
                 Toast.makeText(PartListActivity.this, "queryRecommendPartsBySelected failed ! msg:" + e.getMessage(), Toast.LENGTH_LONG).show();
             }
         });

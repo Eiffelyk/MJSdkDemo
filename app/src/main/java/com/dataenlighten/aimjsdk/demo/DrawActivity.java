@@ -44,7 +44,7 @@ import io.reactivex.functions.Consumer;
 
 public class DrawActivity extends AppCompatActivity implements View.OnClickListener {
 
-    public static final String TAG = DrawActivity.class.getSimpleName();
+    public static final String TAG = "MJSDKDemo";
     private DrawPartView drawPartView;
     private boolean isBottom = false;
 
@@ -149,12 +149,17 @@ public class DrawActivity extends AppCompatActivity implements View.OnClickListe
         MJInitialService.getInstance().queryThinkedKeys(input, names, new QueryThinKedKeysCallback() {
             @Override
             public void onCallback(final List<String> list) {
-                mCThinkList.clear();
-                mCThinkList.addAll(list);
-                mCThinkAdapter.notifyDataSetChanged();
+                if (list != null && list.size() > 0) {
+                    Log.d(TAG, "queryThinkedKeys onCallback: 匹配数据" + list.size()+"条");
+                } else {
+                    Log.d(TAG, "queryThinkedKeys onCallback: 没有匹配");
+                }
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
+                        mCThinkList.clear();
+                        mCThinkList.addAll(list);
+                        mCThinkAdapter.notifyDataSetChanged();
                         if (!list.isEmpty()) {
                             thinkKeyRecycleView.setVisibility(View.VISIBLE);
                         } else {
@@ -166,6 +171,8 @@ public class DrawActivity extends AppCompatActivity implements View.OnClickListe
 
             @Override
             public void onException(Exception e) {
+                Toast.makeText(DrawActivity.this,"queryThinkedKeys failed "+ e.getMessage(), Toast.LENGTH_LONG).show();
+                e.printStackTrace();
                 mCThinkList.clear();
                 mCThinkAdapter.notifyDataSetChanged();
                 thinkKeyRecycleView.setVisibility(View.GONE);
@@ -286,8 +293,6 @@ public class DrawActivity extends AppCompatActivity implements View.OnClickListe
         }
         RxPermissions rxPermissions = new RxPermissions(this);
         Disposable disposable = rxPermissions.requestEach(
-                Manifest.permission.READ_EXTERNAL_STORAGE,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE,
                 Manifest.permission.RECORD_AUDIO).subscribe(new Consumer<Permission>() {
             @Override
             public void accept(Permission permission) throws Exception {
@@ -308,22 +313,27 @@ public class DrawActivity extends AppCompatActivity implements View.OnClickListe
         public void speechInitFailure(Exception e) {
             mVoiceAnimIcon.setVisibility(View.GONE);
             mVoiceAnimLayout.setVisibility(View.GONE);
+            e.printStackTrace();
+            Toast.makeText(DrawActivity.this, "speechInitFailure failed ! msg:" + e.getMessage(), Toast.LENGTH_LONG).show();
         }
 
         @Override
         public void speechRecongnizing(String content) {
+            Log.d(TAG, "speechRecongnizing: ");
             mEditText.setText(content);
             mIsCThink = false;
         }
 
         @Override
         public void speechRecongnizeEnd() {
+            Log.d(TAG, "speechRecongnizeEnd: ");
             queryPartsByKey(mEditText.getText().toString().trim(), true, QueryPartsByKeyRequesParams.QueryMode.Voice);
             mIsCThink = true;
         }
 
         @Override
         public void speechStart() {
+            Log.d(TAG, "speechStart: ");
             mVoiceAnimLayout.setVisibility(View.VISIBLE);
             mVoiceAnimTextView.setText("可以试试一次说多个配件哦");
             mTextVoice.setBackground(getResources().getDrawable(R.drawable.bg_voicelayout_press));
@@ -332,6 +342,7 @@ public class DrawActivity extends AppCompatActivity implements View.OnClickListe
 
         @Override
         public void speechFinish() {
+            Log.d(TAG, "speechFinish: ");
             mVoiceAnimTextView.setText("可以试试一次说多个配件哦");
             mTextVoice.setBackground(getResources().getDrawable(R.drawable.bg_voicelayout_normal));
             mVoiceAnimIcon.setVisibility(View.GONE);
@@ -341,6 +352,7 @@ public class DrawActivity extends AppCompatActivity implements View.OnClickListe
 
         @Override
         public void onVolumeChanged(int i, byte[] bytes) {
+            Log.d(TAG, "onVolumeChanged: " + i);
             mVoiceAnimIcon.setVisibility(View.VISIBLE);
             mVoiceAnimImage1.setVisibility(View.VISIBLE);
             mVoiceAnimImage2.setVisibility(View.GONE);
@@ -367,11 +379,12 @@ public class DrawActivity extends AppCompatActivity implements View.OnClickListe
     private OnDrawQueryListener onDrawQueryListener = new OnDrawQueryListener() {
         @Override
         public void beforeQueryDraw() {
-
+            Log.d(TAG, "beforeQueryDraw: ");
         }
 
         @Override
         public void onDrawQuerySuccess(String result) {
+            Log.d(TAG, "onDrawQuerySuccess: " + result);
             Intent intent = new Intent(DrawActivity.this, PartListActivity.class);
             intent.putExtra("partListResult", result);
             startActivity(intent);
@@ -379,7 +392,8 @@ public class DrawActivity extends AppCompatActivity implements View.OnClickListe
 
         @Override
         public void onDrawQueryFailure(Exception e) {
-            Log.e(TAG, "onDrawQueryFailure:", e);
+            e.printStackTrace();
+            Toast.makeText(DrawActivity.this, "onDrawQueryFailure failed ! msg:" + e.getMessage(), Toast.LENGTH_LONG).show();
         }
     };
 
@@ -395,6 +409,7 @@ public class DrawActivity extends AppCompatActivity implements View.OnClickListe
         MJSdkService.getInstance().queryPartsByKey(params, new QueryCallBack() {
             @Override
             public void onSuccess(String responseBody) {
+                Log.d(TAG, "queryPartsByKey onSuccess: " + responseBody);
                 Intent intent = new Intent(DrawActivity.this, PartListActivity.class);
                 intent.putExtra("partListResult", responseBody);
                 startActivity(intent);
@@ -402,6 +417,7 @@ public class DrawActivity extends AppCompatActivity implements View.OnClickListe
 
             @Override
             public void onFail(Exception e) {
+                e.printStackTrace();
                 Toast.makeText(DrawActivity.this, "queryPartsByKey failed ! msg:" + e.getMessage(), Toast.LENGTH_LONG).show();
             }
         });

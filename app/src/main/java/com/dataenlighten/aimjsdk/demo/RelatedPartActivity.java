@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -30,7 +31,7 @@ import java.util.List;
 
 public class RelatedPartActivity extends AppCompatActivity {
 
-    public static final String TAG = RelatedPartActivity.class.getSimpleName();
+    public static final String TAG = "MJSDKDemo";
 
     private TextView partName, partOE, partPrice, partImgNumber;
     private RecyclerView recyclerView;
@@ -85,6 +86,7 @@ public class RelatedPartActivity extends AppCompatActivity {
         MJSdkService.getInstance().queryPartEPCImg(imageName, prefix, new QueryCallBack() {
             @Override
             public void onSuccess(final String responseBody) {
+                Log.d(TAG, "queryPartEPCImg onSuccess: "+responseBody);
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -110,7 +112,8 @@ public class RelatedPartActivity extends AppCompatActivity {
 
             @Override
             public void onFail(Exception e) {
-                Toast.makeText(RelatedPartActivity.this, "getEPCImg failed ! msg:" + e.getMessage(), Toast.LENGTH_LONG).show();
+                e.printStackTrace();
+                Toast.makeText(RelatedPartActivity.this, "queryRelatedParts failed ! msg:" + e.getMessage(), Toast.LENGTH_LONG).show();
             }
         });
     }
@@ -122,6 +125,7 @@ public class RelatedPartActivity extends AppCompatActivity {
         MJSdkService.getInstance().queryRelatedParts(partsRequesParams, new QueryCallBack() {
             @Override
             public void onSuccess(final String responseBody) {
+                Log.d(TAG, "queryRelatedParts onSuccess: "+responseBody);
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -135,6 +139,7 @@ public class RelatedPartActivity extends AppCompatActivity {
 
             @Override
             public void onFail(Exception e) {
+                e.printStackTrace();
                 Toast.makeText(RelatedPartActivity.this, "queryRelatedParts failed ! msg:" + e.getMessage(), Toast.LENGTH_LONG).show();
             }
         });
