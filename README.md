@@ -7,7 +7,7 @@
 |时间|版本|更新内容|
 |----|-----|-----|
 |2018年11月19日|mjsdk:1.0.19<br>mjthinkkey:1.0.1<br>mjspeech:1.0.1|1.修复获取TopN无数据的bug<br>2.添加设备唯一标识UUID<br>3.规范上传字段|
-
+|2018年11月27日|mjsdk:1.0.29<br>mjthinkkey:1.0.1<br>mjspeech:1.0.1|1.添加授权自动续约，解决授权到期后需要重新初始化的问题<br>2.混淆SDK代码<br>3.加密网络数据交互（有效防止抓包，等中间人攻击）|
 ## **使用步骤：**
 ### 0.拷贝申请到的license.lic（此文件请勿重命名）文件到assets目录中
 ### 1.添加依赖及权限：
@@ -26,9 +26,9 @@ allprojects {
  在项目module build.gradle配置脚本中dependencies添加
 ```java
     //SDK依赖
-    implementation 'com.mingjue.sdk:mjsdk:1.0.19'//SDK主体功能
-    implementation 'com.mingjue.sdk:mjthinkkey:1.0.1'//首字母联想模块独立
-    implementation 'com.mingjue.sdk:mjspeech:1.0.1'//语音模块独立
+    implementation 'com.mingjue.sdk:mjsdk:1.0.29'//SDK主体功能
+    implementation 'com.mingjue.sdk:mjthinkkey:1.0.1'//首字母联想模块独立（使用首字母联想功能的时候添加）
+    implementation 'com.mingjue.sdk:mjspeech:1.0.1'//语音模块独立（使用语音搜索配件的时候添加）
 ```
 
 #####     * 在项目AndroidManifest.xml配置脚本中添加权限
@@ -36,24 +36,31 @@ allprojects {
 
     <!-- 网络状态 -->
     <uses-permission android:name="android.permission.INTERNET" />
-    <!-- 获取手机录音机使用权限，听写、识别、语义理解需要用到这些权限 -->
-    <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <!--获取网络状态，请求网络前判断是否有网络-->
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <!-- 获取手机录音机使用权限（此权限为敏感权限，请在使用时动态申请），听写、识别、语义理解需要用此权限（不用mjspeech功能可以不加此权限） -->
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
 ```
 ### 2.初始化以及方法调用：
 
 #####     * 初始化
 ```java
 /**
- * 服务初始化。
+ * 服务初始化（授权时效为一小时以内，超过一小时会自动授权，不影响后续功能使用）。
  * @param ctx
  * @param  onSdkInitLisener 初始化回调
  * @throws  LicenseNotFoundException 未发现license异常
  */
 void init(Context ctx,OnSdkInitLisener onSdkInitLisener) throws LisenceNotFoundException;
 ```
-
+```java
+/**服务初始化（授权时效为一小时以内，超过一小时会自动授权，不影响后续功能使用）。
+* @param ctx android 上下文
+* @param licenseContent license文件内容
+* @param onSdkInitLisener 初始化回调
+*/
+void init(Context ctx, String licenseContent, OnSdkInitLisener onSdkInitLisener);
+```
 #####     * VIN解析
 
 ```java
@@ -71,7 +78,7 @@ void VINQuery(String vin,int partList, QueryCallBack queryCallBack);
 ```java
 /**
  * 智能推荐接口
- * @param params 智能推荐参数
+ * @param params 智能推荐参数（RecommendPartsRequesParams中的selectedPartNameList为null的时候为依照车身部位浏览配件，selectedPartNameList如果有值会根据这些值进行推荐）
  * @param queryCallBack
  */
 void queryRecommendPartsBySelected(RecommendPartsRequesParams params, QueryCallBack queryCallBack);
@@ -82,7 +89,7 @@ void queryRecommendPartsBySelected(RecommendPartsRequesParams params, QueryCallB
 
 ```java
 /**
- * 查询关联配件
+ * 查询关联配件（又名查询相邻配件）
  * @param params 关联配件查询参数
  * @param queryCallBack
  */

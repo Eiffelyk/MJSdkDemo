@@ -27,7 +27,7 @@ public class RecommendPartsRequesParams {
        private String context;
        /** 是否是底盘件 */
        private boolean isBottom = false;
-       /** 已选配件的名称列表*/
+       /** 已选配件的名称列表；list为null的时候推荐属于浏览圈选配件，list有值的时候会根据提供的配件以及坐标系提供更精准的推荐*/
        private List<SelectionInfo> selectedPartNameList;
 }
 ```
