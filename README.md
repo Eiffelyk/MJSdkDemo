@@ -260,7 +260,7 @@ MJInitialService.getInstance().queryThinkedKeys(input,names,queryThinKedKeysCall
 
 ### 4.接口错误码表
 
-| 错误码 | m描述                   |
+| 错误码 | 描述                   |
 | ------ | ------------------ |
 | 0000   | 成功                    |
 | 1001   | VIN不合法               |
