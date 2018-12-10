@@ -276,7 +276,6 @@ MJInitialService.getInstance().queryThinkedKeys(input,names,queryThinKedKeysCall
 | 1015   | 该车型查不到配件        |
 | 9007   | 后台API异常             |
 |8000002|	系统验证：成功退出系统！|
-|0000|	系统验证：成功刷新访问票据！|
 |8000004|	系统验证: 账号不存在或无权限!|
 |8000005|	系统验证：需要进一步鉴权.|
 |9999999|	其他错误，请联系技术支持！|
