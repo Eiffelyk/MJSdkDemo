@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">MJSDKDemo</string>
+    <string name="main">明觉SDKDemo</string>
+    <string name="vinQurey">vin定型</string>
+    <string name="draw">圈选</string>
+    <string name="partList">配件列表</string>
+    <string name="relatedPart">同装配图配件</string>
+    <string name="AnalysisPart">语义解析</string>
 </resources>

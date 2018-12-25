@@ -26,5 +26,15 @@
         android:id="@+id/vinParse"
         android:enabled="false"
         android:text="进入VIN定型" />
+    <Button
+        android:layout_marginTop="20dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="20sp"
+        android:onClick="analysis"
+        android:id="@+id/analysis"
+        android:enabled="false"
+        android:text="进入语音解析" />
+
 
 </LinearLayout>

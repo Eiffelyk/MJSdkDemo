@@ -28,12 +28,13 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
     public static final String TAG = "MJSDKDemo";
     private Button vinParse;
-
+    private Button analysis;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         vinParse = findViewById(R.id.vinParse);
+        analysis = findViewById(R.id.analysis);
     }
 
     public void sdkInit(View view) {
@@ -46,6 +47,7 @@ public class MainActivity extends AppCompatActivity {
                         @Override
                         public void run() {
                             vinParse.setEnabled(true);
+                            analysis.setEnabled(true);
                             Toast.makeText(MainActivity.this, "初始化成功", Toast.LENGTH_SHORT).show();
                         }
                     });
@@ -65,5 +67,9 @@ public class MainActivity extends AppCompatActivity {
 
     public void vinParse(View view) {
         startActivity(new Intent(this, VinQueryActivity.class));
+    }
+
+    public void analysis(View view) {
+        startActivity(new Intent(this, AnalysisActivity.class));
     }
 }

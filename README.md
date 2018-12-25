@@ -8,6 +8,7 @@
 |----|-----|-----|
 |2018年11月19日|mjsdk:1.0.19<br>mjthinkkey:1.0.1<br>mjspeech:1.0.1|1.修复获取TopN无数据的bug<br>2.添加设备唯一标识UUID<br>3.规范上传字段|
 |2018年11月27日|mjsdk:1.0.29<br>mjthinkkey:1.0.1<br>mjspeech:1.0.1|1.添加授权自动续约，解决授权到期后需要重新初始化的问题<br>2.SDK代码深层加密<br>3.加密网络数据交互（有效防止抓包，修改报文等中间人攻击）<br>4.初始化更灵活，添加了一种初始化的时候调用license文件的方式|
+|2018年12月25日|mjsdk:1.0.30<br>mjthinkkey:1.0.1<br>mjspeech:1.0.1|1.新增语义解析功能<br>2.优化圈选定位的准确性 |
 ## **使用步骤：**
 ### 0.拷贝申请到的license.lic（此文件请勿重命名）文件到assets目录中
 ### 1.添加依赖及权限：
@@ -73,6 +74,18 @@ void init(Context ctx, String licenseContent, OnSdkInitLisener onSdkInitLisener)
 void VINQuery(String vin,int partList, QueryCallBack queryCallBack);
 ```
 [详细信息](https://github.com/Eiffelyk/MJSdkDemo/blob/master/doc/function/VINQuery.md).
+
+
+##### *语意解析
+```java
+/**
+* 语义解析，将一段文字转化为 配件带工项的形式
+* @param vinCode  vin码（大写），没有VIN码时传空字符串
+* @param key   要解析的文字信息
+* @param queryCallBack
+*/
+void queryPartAnalysis(String vinCode, String key, QueryCallBack queryCallBack);
+```
 
 #####     * 智能推荐接口
 ```java
@@ -276,6 +289,7 @@ MJInitialService.getInstance().queryThinkedKeys(input,names,queryThinKedKeysCall
 | 1015   | 该车型查不到配件        |
 | 9007   | 后台API异常             |
 |8000002|	系统验证：成功退出系统！|
+|0000|	系统验证：成功刷新访问票据！|
 |8000004|	系统验证: 账号不存在或无权限!|
 |8000005|	系统验证：需要进一步鉴权.|
 |9999999|	其他错误，请联系技术支持！|

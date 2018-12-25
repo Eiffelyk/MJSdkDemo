@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="15dp">
+
+    <EditText
+        android:id="@+id/act_analysis_part_vin"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="请输入VIN码（无VIN此输入框空白）"
+        android:maxLines="1"
+        android:singleLine="true" />
+
+    <EditText
+        android:id="@+id/act_analysis_part_key"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:hint="请输入关键字（300字以内）"
+        android:maxLines="1"
+        android:singleLine="true" />
+
+    <Button
+        android:id="@+id/act_analysis_part_btn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="解析" />
+
+    <TextView
+        android:id="@+id/act_analysis_part_show"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="15dp"
+        android:text="根据传入的关键字key进行语义解析，返回明觉标准名，以及维修工项。" />
+</LinearLayout>
