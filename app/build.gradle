@@ -70,5 +70,5 @@ dependencies {
     //SDK依赖
     implementation 'com.mingjue.sdk:mjsdk:1.0.30'
     implementation 'com.mingjue.sdk:mjthinkkey:1.0.1'
-    implementation 'com.mingjue.sdk:mjspeech:1.0.1'
+    implementation 'com.mingjue.sdk:mjspeech:1.0.2'
 }

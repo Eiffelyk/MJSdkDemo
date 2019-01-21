@@ -9,6 +9,7 @@
 |2018年11月19日|mjsdk:1.0.19<br>mjthinkkey:1.0.1<br>mjspeech:1.0.1|1.修复获取TopN无数据的bug<br>2.添加设备唯一标识UUID<br>3.规范上传字段|
 |2018年11月27日|mjsdk:1.0.29<br>mjthinkkey:1.0.1<br>mjspeech:1.0.1|1.添加授权自动续约，解决授权到期后需要重新初始化的问题<br>2.SDK代码深层加密<br>3.加密网络数据交互（有效防止抓包，修改报文等中间人攻击）<br>4.初始化更灵活，添加了一种初始化的时候调用license文件的方式|
 |2018年12月25日|mjsdk:1.0.30<br>mjthinkkey:1.0.1<br>mjspeech:1.0.1|1.新增语义解析功能<br>2.优化圈选定位的准确性 |
+|2019年1月21日|mjsdk:1.0.30<br>mjthinkkey:1.0.1<br>mjspeech:1.0.2|1.修改语音单次录入时长为30，静音等待时间调整为5秒|
 ## **使用步骤：**
 ### 0.拷贝申请到的license.lic（此文件请勿重命名）文件到assets目录中
 ### 1.添加依赖及权限：
@@ -29,7 +30,7 @@ allprojects {
     //SDK依赖
     implementation 'com.mingjue.sdk:mjsdk:1.0.29'//SDK主体功能
     implementation 'com.mingjue.sdk:mjthinkkey:1.0.1'//首字母联想模块独立（使用首字母联想功能的时候添加）
-    implementation 'com.mingjue.sdk:mjspeech:1.0.1'//语音模块独立（使用语音搜索配件的时候添加）
+    implementation 'com.mingjue.sdk:mjspeech:1.0.2'//语音模块独立（使用语音搜索配件的时候添加）
 ```
 
 #####     * 在项目AndroidManifest.xml配置脚本中添加权限
