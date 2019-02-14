@@ -23,92 +23,9 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
-#-------------------------------------------定制化区域----------------------------------------------
-#---------------------------------1.实体类---------------------------------
-#把代码以及所使用到的各种第三方库代码统统移动到同一个包下
--repackageclasses
--obfuscationdictionary proguard-dictionary.txt
--classobfuscationdictionary proguard-dictionary.txt
--packageobfuscationdictionary proguard-dictionary.txt
-#mj_sdk_core
--dontwarn com.mj.sdk.core.callback.**
--keep class com.mj.sdk.core.callback.** { *; }
--dontwarn com.mj.sdk.core.model.**
--keep class com.mj.sdk.core.model.** { *; }
--keep class com.mj.sdk.core.sdk.ExceptionCode{ *; }
--keep class com.mj.sdk.core.sdk.SDK_Core{ *; }
 
-#mj_sdk_function_character
--keep class com.mj.sdk.function_character.SDK_Function_Character { *; }
--keep class com.mj.sdk.function_character.SDK_Function_Character$* { *; }
--keep class com.mj.sdk.function_character.SDK_Function_Character_Listener { *; }
-
-#mj_sdk_function_image
--keep class com.mj.sdk.function_image.SDK_Function_Image { *; }
--keep class com.mj.sdk.function_image.PartThumbnailListener { *; }
--keep class com.mj.sdk.function_image.PartEPCListener { *; }
-
-#mj_sdk_function_keyboard
-
-#mj_sdk_function_planb
--keep class com.mj.sdk.function_planb.SDK_Function_PlanB { *; }
--keep class com.mj.sdk.function_planb.SDK_Function_PlanB_Listener { *; }
-#mj_sdk_function_oe
--keep class com.mj.sdk.function_oe.SDK_Function_OE { *; }
--keep class com.mj.sdk.function_oe.SDK_Function_OE_Listener { *; }
-#mj_sdk_function_querybydraw
--keep class com.mj.sdk.function_querybydraw.PartRelevanceListener { *; }
--keep class com.mj.sdk.function_querybydraw.SDK_Function_QueryByDraw { *; }
--keep class com.mj.sdk.function_querybydraw.DrawPartView { public *; }
--keep class com.mj.sdk.function_querybydraw.SDK_Function_QueryByDraw_Listener { *; }
--keep class com.mj.sdk.function_querybydraw.SDK_Function_QueryByDraw_State_Listener { *; }
--keep class com.mj.sdk.function_querybydraw.SDK_Function_QueryByRecommend_Listener { *; }
-
-#mj_sdk_function_speech
--keep class com.mj.sdk.function_speech.SDK_Function_Speech { *; }
--keep class com.mj.sdk.function_speech.SpeechListener { *; }
-
-#mj_sdk_function_vin
--keep class com.mj.sdk.function_vin.SDK_Function_Vin { *; }
--keep class com.mj.sdk.function_vin.SDK_Function_Vin_Listener { *; }
--keep class com.mj.sdk.function_vin.VINOptionBean { *; }
--keep class com.mj.sdk.function_vin.VINResponseBean { *; }
-
-#mj_sdk
--keep class com.mj.sdk.bean.** { *; }
--keep class com.mj.sdk.Exception.** { *; }
--keep class com.mj.sdk.callback.** { *; }
--keep class com.mj.sdk.model.SdkInstanceManager { *; }
--keep class com.mj.sdk.service.MJSdkService { *; }
--keep class com.mj.sdk.service.IMJSdkService { *; }
--keep class com.mj.sdk.view.DrawManager { *; }
--keep class com.mj.sdk.view.DrawPartView { *; }
--keep class com.mj.sdk.view.OnDrawQueryListener { *; }
--keep class com.mj.sdk.speech.**{ *; }
-
-# base module
--keep class com.mj.base.**{ *; }
--keep class com.mj.network.**{ *; }
-
-
-
-
-#-------------------------------------------------------------------------
-
-#---------------------------------2.第三方包-------------------------------
-#bugly
--dontwarn com.tencent.bugly.**
--keep public class com.tencent.bugly.**{*;}
-
-#growingio
--keep class com.growingio.android.sdk.** {*;}
--dontwarn com.growingio.android.sdk.**
-
-#-libraryjars libs/oss
--keep class com.alibaba.sdk.android.oss.** { *; }
--dontwarn okio.**
--dontwarn org.apache.commons.codec.binary.**
-
+-dontwarn com.dataenlighten.aimjsdk.demo.custom.ZoomImageView
+-keep class com.dataenlighten.aimjsdk.demo.custom.ZoomImageView { *; }
 #-libraryjars libs/Msc.jar
 -dontwarn com.chinaMobile.**
 -keep class com.chinaMobile.** { *; }
@@ -122,11 +39,6 @@
 -dontwarn com.iflytek.sunflower.**
 -keep class com.iflytek.sunflower.** { *; }
 -keep class **.R$* {*;}
-
-#-libraryjars libs/glide
--dontwarn jp.wasabeef.glide.transformations.**
--keep class jp.wasabeef.glide.transformations.** { *; }
-
 #-libraryjars libs/okhttp3
 -dontwarn okhttp3.**
 -keep class okhttp3.** { *; }
@@ -134,37 +46,15 @@
 #-libraryjars libs/okio
 -dontwarn okio.**
 -keep class okio.** { *; }
-
-#-加载动画
--dontwarn com.mj.library.animator.**
--keep class com.mj.library.animator.** { *; }
-
-
--keepclassmembers class rx.internal.util.unsafe.*ArrayQueue*Field* {
-    long producerIndex;
-    long consumerIndex;
-}
--keepclassmembers class rx.internal.util.unsafe.BaseLinkedQueueProducerNodeRef {
-    rx.internal.util.atomic.LinkedQueueNode producerNode;
-}
--keepclassmembers class rx.internal.util.unsafe.BaseLinkedQueueConsumerNodeRef {
-    rx.internal.util.atomic.LinkedQueueNode consumerNode;
-}
-#-------------------------------------------------------------------------
-
-#---------------------------------3.与js互相调用的类------------------------
-
-
-
-#-------------------------------------------------------------------------
-
-#---------------------------------4.反射相关的类和方法-----------------------
-
-
-#----------------------------------------------------------------------------
 #---------------------------------------------------------------------------------------------------
-
-#-------------------------------------------基本不用动区域--------------------------------------------
+-keep public class * implements com.bumptech.glide.module.GlideModule
+-keep public class * extends com.bumptech.glide.module.AppGlideModule
+-keep public enum com.bumptech.glide.load.ImageHeaderParser$** {
+  **[] $VALUES;
+  public *;
+}
+-dontwarn com.bumptech.glide.load.resource.bitmap.VideoDecoder
+#-------------------------------------------------------------------------
 #---------------------------------基本指令区----------------------------------
 -optimizationpasses 5       #代码混淆压缩比，在0~7之间，默认为5，一般不做修改
 -dontusemixedcaseclassnames     #混合时不使用大小写混合，混合后的类名为小写
@@ -269,11 +159,3 @@
     public void *(android.webkit.WebView, jav.lang.String);
 }
 #----------------------------------------------------------------------------
-#---------------------------------------------------------------------------------------------------
--keep public class * implements com.bumptech.glide.module.GlideModule
--keep public class * extends com.bumptech.glide.module.AppGlideModule
--keep public enum com.bumptech.glide.load.ImageHeaderParser$** {
-  **[] $VALUES;
-  public *;
-}
--dontwarn com.bumptech.glide.load.resource.bitmap.VideoDecoder
