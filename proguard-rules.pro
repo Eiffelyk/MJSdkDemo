@@ -27,8 +27,8 @@
 -dontwarn com.dataenlighten.aimjsdk.demo.custom.ZoomImageView
 -keep class com.dataenlighten.aimjsdk.demo.custom.ZoomImageView { *; }
 #-libraryjars libs/Msc.jar
--dontwarn com.chinaMobile.**
--keep class com.chinaMobile.** { *; }
+#-dontwarn com.chinaMobile.**
+#-keep class com.chinaMobile.** { *; }
 -dontwarn com.iflytek.**
 -keep class com.iflytek.** { *; }
 -keep class com.iflytek.cloud.thirdparty.** { *; }
@@ -46,6 +46,16 @@
 #-libraryjars libs/okio
 -dontwarn okio.**
 -keep class okio.** { *; }
+
+#gson
+#如果用用到Gson解析包的，直接添加下面这几行就能成功混淆，不然会报错。
+-keepattributes Signature
+# Gson specific classes
+-keep class sun.misc.Unsafe { *; }
+# Application classes that will be serialized/deserialized over Gson
+-keep class com.google.gson.** { *; }
+-keep class com.google.gson.stream.** { *; }
+
 #---------------------------------------------------------------------------------------------------
 -keep public class * implements com.bumptech.glide.module.GlideModule
 -keep public class * extends com.bumptech.glide.module.AppGlideModule
@@ -131,6 +141,9 @@
 }
 -keep class * implements android.os.Parcelable {
   public static final android.os.Parcelable$Creator *;
+  public <fields>;
+  private <fields>;
+  public <methods>;
 }
 -keepclassmembers class * implements java.io.Serializable {
     static final long serialVersionUID;
