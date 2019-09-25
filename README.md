@@ -10,6 +10,7 @@
 |2018年11月27日|mjsdk:1.0.29<br>mjthinkkey:1.0.1<br>mjspeech:1.0.1|1.添加授权自动续约，解决授权到期后需要重新初始化的问题<br>2.SDK代码深层加密<br>3.加密网络数据交互（有效防止抓包，修改报文等中间人攻击）<br>4.初始化更灵活，添加了一种初始化的时候调用license文件的方式|
 |2018年12月25日|mjsdk:1.0.30<br>mjthinkkey:1.0.1<br>mjspeech:1.0.1|1.新增语义解析功能<br>2.优化圈选定位的准确性 |
 |2019年1月21日|mjsdk:1.0.30<br>mjthinkkey:1.0.1<br>mjspeech:1.0.2|1.修改语音单次录入时长为30，静音等待时间调整为5秒|
+|2019年9月26日|mjsdk:1.0.50<br>mjthinkkey:1.0.2<br>mjspeech:1.0.3|1.初始化加入userKey必填字段（用户的唯一标识）<br>2.优化升级内部调用库(armeabi升级为armeabi-v7a)<br>3.修复语音识别功能最后一个词不识别的bug|
 ## **使用步骤：**
 ### 0.拷贝申请到的license.lic（此文件请勿重命名）文件到assets目录中
 ### 1.添加依赖及权限：
@@ -27,10 +28,24 @@ allprojects {
 #####     *Gradle
  在项目module build.gradle配置脚本中dependencies添加
 ```java
+
+android {
+   ...
+    defaultConfig {
+       ...
+        ndk {
+            abiFilters "armeabi-v7a"
+        }
+    }
+}
+
+dependencies {
+    ...
     //SDK依赖
-    implementation 'com.mingjue.sdk:mjsdk:1.0.29'//SDK主体功能
-    implementation 'com.mingjue.sdk:mjthinkkey:1.0.1'//首字母联想模块独立（使用首字母联想功能的时候添加）
-    implementation 'com.mingjue.sdk:mjspeech:1.0.2'//语音模块独立（使用语音搜索配件的时候添加）
+    implementation 'com.mingjue.sdk:mjsdk:1.0.50'
+    implementation 'com.mingjue.sdk:mjthinkkey:1.0.2'
+    implementation 'com.mingjue.sdk:mjspeech:1.0.3'
+}
 ```
 
 #####     * 在项目AndroidManifest.xml配置脚本中添加权限
@@ -47,21 +62,26 @@ allprojects {
 
 #####     * 初始化
 ```java
-/**
- * 服务初始化（授权时效为一小时以内，超过一小时会自动授权，不影响后续功能使用）。
- * @param ctx
- * @param  onSdkInitLisener 初始化回调
- * @throws  LicenseNotFoundException 未发现license异常
- */
-void init(Context ctx,OnSdkInitLisener onSdkInitLisener) throws LisenceNotFoundException;
+    /**
+     * 服务初始化。
+     *
+     * @param ctx android 上下文
+     * @param userKey 用户唯一标识
+     * @param onSdkInitLisener 初始化回调
+     * @throws LicenseNotFoundException 未发现license异常
+     */
+    void init(Context ctx,String userKey, OnSdkInitLisener onSdkInitLisener) throws LicenseNotFoundException;
+
 ```
 ```java
-/**服务初始化（授权时效为一小时以内，超过一小时会自动授权，不影响后续功能使用）。
-* @param ctx android 上下文
-* @param licenseContent license文件内容
-* @param onSdkInitLisener 初始化回调
-*/
-void init(Context ctx, String licenseContent, OnSdkInitLisener onSdkInitLisener);
+
+    /**
+     * @param ctx android 上下文
+     * @param userKey 用户唯一标识
+     * @param licenseContent license文件内容
+     * @param onSdkInitLisener 初始化回调
+     */
+    void init(Context ctx, String userKey,String licenseContent, OnSdkInitLisener onSdkInitLisener);
 ```
 #####     * VIN解析
 
