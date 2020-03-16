@@ -37,6 +37,6 @@ void queryPartEPCImg(String imageName,String imagePrefix, QueryCallBack queryCal
 	"code": "0000",
 	"codeDescription": "成功",
 	"toastMessage": "成功",
-	"imageInfo": "https://mj-test-paic-image.oss-cn-shenzhen.aliyuncs.com/Nissan/115_963A_001.png?Expires=1542470161&OSSAccessKeyId=LTAIzZtQg0TVywb0&Signature=qeYaa43FCf291w%2FlWdaLwKc9v3g%3D"
+	"imageInfo": "https://mj-test-paic-image.oss-cn-shenzhen.aliyuncs.com/Nissan/xxxxxxx.png"
 }
 ```
