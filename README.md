@@ -11,6 +11,7 @@
 |2018年12月25日|mjsdk:1.0.30<br>mjthinkkey:1.0.1<br>mjspeech:1.0.1|1.新增语义解析功能<br>2.优化圈选定位的准确性 |
 |2019年1月21日|mjsdk:1.0.30<br>mjthinkkey:1.0.1<br>mjspeech:1.0.2|1.修改语音单次录入时长为30，静音等待时间调整为5秒|
 |2019年9月26日|mjsdk:1.0.50<br>mjthinkkey:1.0.2<br>mjspeech:1.0.3|1.初始化加入userKey必填字段（用户的唯一标识）<br>2.优化升级内部调用库(armeabi升级为armeabi-v7a)<br>3.修复语音识别功能最后一个词不识别的bug|
+|2019年11月27日|mjsdk:1.0.50<br>mjthinkkey:1.0.3<br>mjspeech:1.0.4|语音搜索和首字母功能去掉v7:28.0.0,兼容低版本编译|
 ## **使用步骤：**
 ### 0.拷贝申请到的license.lic（此文件请勿重命名）文件到assets目录中
 ### 1.添加依赖及权限：
@@ -43,8 +44,8 @@ dependencies {
     ...
     //SDK依赖
     implementation 'com.mingjue.sdk:mjsdk:1.0.50'
-    implementation 'com.mingjue.sdk:mjthinkkey:1.0.2'
-    implementation 'com.mingjue.sdk:mjspeech:1.0.3'
+    implementation 'com.mingjue.sdk:mjthinkkey:1.0.3'
+    implementation 'com.mingjue.sdk:mjspeech:1.0.4'
 }
 ```
 
